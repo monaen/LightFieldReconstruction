@@ -1,21 +1,24 @@
 #!/usr/bin/env sh
-# =================================================================================== #
-# | Description:                                                                    | #
-# |     Script to download the pretrained models                                    | #
-# |                                                                                 | #
-# |                                                                                 | #
-# | Citation:                                                                       | #
-# |     Nan Meng, Edmund Lam, Tsia, Kevin Kin Man, So, Hayden Kwok-Hay, "Human      | #
-# |     somatic label-free bright-field cell images", IEEE Dataport, 2018.          | #
-# |     [Online]. Available: http://dx.doi.org/10.21227/H2QW97/. Accessed: Mar. 13, | #
-# |     2019.                                                                       | #
-# |                                                                                 | #
-# | Paper:                                                                          | #
-# |     Large-scale Multi-class Image-based Cell Classification with Deep Learning  | #
-# |     Nan Meng, Edmund Yin Mun Lam, Kevin Kin Man Tsia, and Hayden Kwok Hay So    | #
-# |     IEEE Journal of Biomedical and Health Informatics, 2018                     | #
-# |                                                                                 | #
-# =================================================================================== #
+# ====================================================================================================================== #
+# | Description:                                                                                                       | #
+# |     Script to download the pretrained models                                                                       | #
+# |                                                                                                                    | #
+# |                                                                                                                    | #
+# | Citation:                                                                                                          | #
+# |     @article{meng2019high,                                                                                         | #
+# |              title={High-dimensional dense residual convolutional neural network for light field reconstruction},  | #
+# |              author={Meng, Nan and So, Hayden Kwok-Hay and Sun, Xing and Lam, Edmund},                             | #
+# |              journal={IEEE Transactions on Pattern Analysis and Machine Intelligence},                             | #
+# |              year={2019},                                                                                          | #
+# |              publisher={IEEE}                                                                                      | #
+# |             }                                                                                                      | #
+# |                                                                                                                    | #
+# | Paper:                                                                                                             | #
+# |     High-Dimensional Dense Residual Convolutional Neural Network for Light Field Reconstruction                    | #
+# |     Nan Meng, Hayden Kwok-Hay So, Xing Sun, and Edmund Y. Lam                                                      | #
+# |     IEEE Transactions on Pattern Analysis and Machine Intelligence, 2019                                           | #
+# |                                                                                                                    | #
+# ====================================================================================================================== #
 
 # This scripts downloads the human somatic cell dataset (large) and unzips it.
 # DIR = "$( cd "$(dirname "$0")" ; pwd -P )"
