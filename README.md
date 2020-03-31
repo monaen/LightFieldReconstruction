@@ -12,6 +12,16 @@ This Project is a Tensorflow implementation of
 * tqmd
 * opencv
 
+## Installation
+* Download the project
+```commandline
+git clone https://github.com/monaen/LightFieldReconstruction.git --branch code --single-branch
+```
+
+* Preparing the Dataset
+```
+```
+
 **Note: The code for this project will be uploaded gradually.**
 
 ### TODO List
