@@ -2,7 +2,7 @@
 
 This Project is a Tensorflow implementation of 
 * "High-Dimensional Dense Residual Convolutional Neural Network for Light Field Reconstruction" *IEEE Transactions on Pattern Analysis and Machine Intelligence*, **Nan Meng**, Hayden K-H. So, Xing Sun, Edmund Y. Lam, 2019. [[Paper]](https://arxiv.org/pdf/1910.01426.pdf)
-* "High-order Residual Network for Light Field Super-Resolution" *The 34th AAAI Conference on Artificial Intelligence*, **Nan Meng**, Xiaofei Wu, Jianzhuang Liu, Edmund Y. Lam, 2020.[[Paper]](https://arxiv.org/pdf/2003.13094.pdf)
+* "High-order Residual Network for Light Field Super-Resolution" *The 34th AAAI Conference on Artificial Intelligence*, **Nan Meng**, Xiaofei Wu, Jianzhuang Liu, Edmund Y. Lam, 2020. [[Paper]](https://arxiv.org/pdf/2003.13094.pdf)
 
 
 ## Requirements
