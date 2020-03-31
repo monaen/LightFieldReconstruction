@@ -11,6 +11,7 @@ This Project is a Tensorflow implementation of
 * Tensorflow r1.\*>=r1.8
 * tqmd
 * opencv
+* unrar
 
 ## Installation
 * Download the project
@@ -36,7 +37,19 @@ git clone https://github.com/monaen/LightFieldReconstruction.git --branch master
 
 **Note: The code for this project will be uploaded gradually.**
 
-### TODO List
+## Reference
+Paper
+```
+@article{Meng2018Largescale,
+  title = {Large-scale Multi-class Image-based Cell Classification with Deep Learning},
+  author = {Meng, Nan and Lam, Edmund and Tsia, Kevin Kin Man and So, Hayden Kwok-Hay},
+  journal = {IEEE journal of biomedical and health informatics},
+  year = {2018},
+  publisher = {IEEE}
+}
+```
+
+## TODO List
 * T-PAMI
 - [x] Spatial super-resolution 2x framework and the pretrained model.
 - [ ] Spatial super-resolution 3x framework and the pretrained model.
