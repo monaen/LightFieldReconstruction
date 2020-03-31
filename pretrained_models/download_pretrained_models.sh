@@ -18,6 +18,9 @@
 # |     Nan Meng, Hayden Kwok-Hay So, Xing Sun, and Edmund Y. Lam                                                      | #
 # |     IEEE Transactions on Pattern Analysis and Machine Intelligence, 2019                                           | #
 # |                                                                                                                    | #
+# | Contact:                                                                                                           | #
+# |     author: Nan Meng                                                                                               | #
+# |     email:  u3003637@connect.hku.hk  |   nanmeng.uestc@hotmail.com                                                 | #
 # ====================================================================================================================== #
 
 # This scripts downloads the human somatic cell dataset (large) and unzips it.
