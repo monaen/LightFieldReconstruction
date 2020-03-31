@@ -16,7 +16,7 @@
 # |                                                                                                                    | #
 # | Contact:                                                                                                           | #
 # |     author: Nan Meng                                                                                               | #
-# |     email:  u3003637@connect.hku.hk  |   nanmeng.uestc@hotmail.com                                                 | #
+# |     email:  u3003637@connect.hku.hk   |   nanmeng.uestc@hotmail.com                                                | #
 # ====================================================================================================================== #
 
 import argparse
