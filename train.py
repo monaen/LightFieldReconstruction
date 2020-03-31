@@ -1,9 +1,23 @@
 #!/usr/bin/env python
-# =============================================================================== #
-#                         HDDRNet (Tensorflow version >= r1.8)
-# 
-# 
-# =============================================================================== #
+# ====================================================================================================================== #
+# |                                      HDDRNet (Tensorflow r1.*>=r1.8)                                               | #
+# | Description:                                                                                                       | #
+# |     An Tensorflow implementation of "High-Dimensional Dense Residual Convolutional Neural Network for Light        | #
+# |     Field Reconstruction".                                                                                         | #
+# |                                                                                                                    | #
+# | Paper:                                                                                                             | #
+# |     High-Dimensional Dense Residual Convolutional Neural Network for Light Field Reconstruction                    | #
+# |     Nan Meng, Hayden Kwok-Hay So, Xing Sun, and Edmund Y. Lam                                                      | #
+# |     IEEE Transactions on Pattern Analysis and Machine Intelligence (T-PAMI), 2019.                                 | #
+# |                                                                                                                    | #
+# |     High-order Residual Network for Light Field Super-Resolution                                                   | #
+# |     Nan Meng, Xiaofei Wu, Jianzhuang Liu, Edmund Y. Lam                                                            | #
+# |     The 34th AAAI Conference on Artificial Intelligence, 2020.                                                     | #
+# |                                                                                                                    | #
+# | Contact:                                                                                                           | #
+# |     author: Nan Meng                                                                                               | #
+# |     email:  u3003637@connect.hku.hk  |   nanmeng.uestc@hotmail.com                                                 | #
+# ====================================================================================================================== #
 
 import argparse
 import glob
