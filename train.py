@@ -32,7 +32,7 @@ tf.logging.set_verbosity(tf.logging.ERROR)
 
 # ============================== Experimental settings ============================== #
 parser = argparse.ArgumentParser(description="HDDRNet Tensorflow Implementation")
-parser.add_argument("--datadir", type=str, default="./", help="The training and testing data path")
+parser.add_argument("--datadir", type=str, default="./Data", help="The training and testing data path")
 parser.add_argument("--lr_start", type=float, default=1e-5, help="The start learning rate")
 parser.add_argument("--lr_beta1", type=float, default=0.5, help="The exponential decay rate for the 1st moment estimates")
 parser.add_argument("--batchSize", type=int, default=1, help="The batchsize of input data")
@@ -172,8 +172,8 @@ def main(args):
     
     # ============ Load the Train / Test Data ============ #
     logging.info("===> Loading the Training and Test Datasets")
-    trainlist = glob.glob("MSTrain/5x5/*/*.npy")
-    testlist = glob.glob("MSTest/5x5/*.npy")
+    trainlist = glob.glob(os.path.join(args.datadir, "MSTrain/5x5/*/*.npy"))
+    testlist = glob.glob(os.path.join(args.datadir, "MSTest/5x5/*.npy"))
 
     BESTPSNR = 0.0
     BESTSSIM = 0.0
