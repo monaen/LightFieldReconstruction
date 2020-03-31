@@ -10,7 +10,7 @@ This Project is a Tensorflow implementation of
 * Python3>=3.5
 * Tensorflow r1.\*>=r1.8
 * tqmd
-
+* opencv
 
 **Note: The code for this project will be uploaded gradually.**
 
