@@ -54,8 +54,6 @@ parser.add_argument("--save_folder", type=str, default="checkpoints", help="mode
 args = parser.parse_args()
 
 
-
-
 def import_model(scale_S, scale_A):
     if scale_A == 1:
         if scale_S == 4:
