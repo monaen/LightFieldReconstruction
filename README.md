@@ -15,7 +15,7 @@ This Project is a Tensorflow implementation of
 ## Installation
 * Download the project
 ```commandline
-git clone https://github.com/monaen/LightFieldReconstruction.git --branch code --single-branch
+git clone https://github.com/monaen/LightFieldReconstruction.git --branch master --single-branch
 ```
 
 * Preparing the Dataset
