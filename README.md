@@ -19,7 +19,19 @@ git clone https://github.com/monaen/LightFieldReconstruction.git --branch master
 ```
 
 * Preparing the Dataset
+```commandline
 ```
+
+* Training
+```commandline
+```
+
+* Evaluation
+```commandline
+```
+
+## Using the pretrained model
+```commandline
 ```
 
 **Note: The code for this project will be uploaded gradually.**
