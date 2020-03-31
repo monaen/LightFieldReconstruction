@@ -22,11 +22,11 @@ git clone https://github.com/monaen/LightFieldReconstruction.git --branch master
 ```commandline
 ```
 
-* Training
+## Training
 ```commandline
 ```
 
-* Evaluation
+## Evaluation
 ```commandline
 ```
 
