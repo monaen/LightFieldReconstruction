@@ -32,7 +32,7 @@ tf.logging.set_verbosity(tf.logging.ERROR)
 
 # ============================== Experimental settings ============================== #
 parser = argparse.ArgumentParser(description="HDDRNet Tensorflow Implementation")
-parser.add_argument("--datadir", type=str, default="./Data", help="The training and testing data path")
+parser.add_argument("--datadir", type=str, default="./data", help="The training and testing data path")
 parser.add_argument("--lr_start", type=float, default=1e-5, help="The start learning rate")
 parser.add_argument("--lr_beta1", type=float, default=0.5, help="The exponential decay rate for the 1st moment estimates")
 parser.add_argument("--batchSize", type=int, default=1, help="The batchsize of input data")
