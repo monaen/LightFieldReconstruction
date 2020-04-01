@@ -2,6 +2,7 @@ This folder store the pretrained models of M-HDDRNet for Spatial 2x, 3x, 4x; Ang
 
 Folder Structure:
 
+```
 M-HDDRNet
    |--- Sx2
    |     |--- M-HDDRNet.data-00000-of-00001
@@ -27,4 +28,5 @@ M-HDDRNet
    |--- Sx2Ax2
    |     |--- M-HDDRNet.data-00000-of-00001
    |     |--- M-HDDRNet.index
-   |
+   |--- README.md
+   ```
