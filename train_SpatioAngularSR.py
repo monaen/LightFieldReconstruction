@@ -44,8 +44,8 @@ parser.add_argument("--channels", type=int, default=1,
 parser.add_argument("--verbose", type=bool, default=True, help="Whether print the network structure")
 parser.add_argument("--num_epoch", type=int, default=50, help="The total number of training epoch")
 parser.add_argument("--start_epoch", type=int, default=0, help="The total number of crops for each light field")
-parser.add_argument("--gamma_S", type=int, default=4, choices=[1, 2, 3, 4], help="Spatial scaling factor")
-parser.add_argument("--gamma_A", type=int, default=1, choices=[0, 1, 2, 3, 4],
+parser.add_argument("--gamma_S", type=int, default=2, choices=[1, 2, 3, 4], help="Spatial scaling factor")
+parser.add_argument("--gamma_A", type=int, default=2, choices=[0, 1, 2, 3, 4],
                     help="Angular scaling factor, '0' represents 3x3->7x7")
 parser.add_argument("--num_GRL_HRB", type=int, default=5, help="The number of HRB in GRLNet")
 parser.add_argument("--num_SRe_HRB", type=int, default=3, help="The number of HRB in SReNet")
@@ -152,7 +152,7 @@ def main(args):
     # ===================== Definition of params ====================== #
     logging.info("===> Initialization")
     inputs = tf.placeholder(tf.float32, [args.batchSize, args.imageSize//args.gamma_S, args.imageSize//args.gamma_S,
-                                         args.viewSize, args.viewSize, args.channels])
+                                         args.viewSize//args.gamma_A+1, args.viewSize//args.gamma_A+1, args.channels])
     groundtruth = tf.placeholder(tf.float32, [args.batchSize, args.imageSize, args.imageSize, args.viewSize,
                                               args.viewSize, args.channels])
     is_training = tf.placeholder(tf.bool, [])
@@ -207,7 +207,7 @@ def main(args):
 
         for ii in range(num_iter):
             y_batch = np.load(trainlist[ii])
-            x_batch = downsampling(y_batch, rs=args.gamma_S, ra=args.gamma_A, nSig=1.2)
+            y_batch, x_batch = downsampling(y_batch, rs=args.gamma_S, ra=args.gamma_A, nSig=1.2)
 
             y_batch = y_batch.astype(np.float32) / 255.
             x_batch = x_batch.astype(np.float32) / 255.

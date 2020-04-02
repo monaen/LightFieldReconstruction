@@ -38,20 +38,20 @@ parser.add_argument("--lr_beta1", type=float, default=0.5,
                     help="The exponential decay rate for the 1st moment estimates")
 parser.add_argument("--batchSize", type=int, default=1, help="The batchsize of input data")
 parser.add_argument("--imageSize", type=int, default=96, help="Spatial size of input light fields")
-parser.add_argument("--viewSize", type=int, default=5, help="Angular size of input light fields")
+parser.add_argument("--viewSize", type=int, default=9, help="Angular size of input light fields")
 parser.add_argument("--channels", type=int, default=1,
                     help="Channels=1 means only the luma channel; Channels=3 means RGB channels")
 parser.add_argument("--verbose", type=bool, default=True, help="Whether print the network structure")
 parser.add_argument("--num_epoch", type=int, default=50, help="The total number of training epoch")
 parser.add_argument("--start_epoch", type=int, default=0, help="The total number of crops for each light field")
-parser.add_argument("--gamma_S", type=int, default=4, choices=[1, 2, 3, 4], help="Spatial scaling factor")
-parser.add_argument("--gamma_A", type=int, default=1, choices=[0, 1, 2, 3, 4],
+parser.add_argument("--gamma_S", type=int, default=1, choices=[1, 2, 3, 4], help="Spatial scaling factor")
+parser.add_argument("--gamma_A", type=int, default=4, choices=[0, 1, 2, 3, 4],
                     help="Angular scaling factor, '0' represents 3x3->7x7")
 parser.add_argument("--num_GRL_HRB", type=int, default=5, help="The number of HRB in GRLNet")
 parser.add_argument("--num_SRe_HRB", type=int, default=3, help="The number of HRB in SReNet")
-parser.add_argument("--resume", type=bool, default=True, help="Need to resume the pretrained model or not")
+parser.add_argument("--resume", type=bool, default=False, help="Need to resume the pretrained model or not")
 parser.add_argument("--select_gpu", type=str, default="0", help="Select the gpu for training or evaluation")
-parser.add_argument("--perceptual_loss", type=bool, default=True,
+parser.add_argument("--perceptual_loss", type=bool, default=False,
                     help="Need to use perceptual loss or not, if true, need to set the vgg_model item")
 parser.add_argument("--vgg_model", type=str, default="vgg19/weights/latest", help="Pretrained VGG model path")
 parser.add_argument("--save_folder", type=str, default="checkpoints", help="model save path")
@@ -151,10 +151,23 @@ def main(args):
     
     # ===================== Definition of params ====================== #
     logging.info("===> Initialization")
-    inputs = tf.placeholder(tf.float32, [args.batchSize, args.imageSize//args.gamma_S, args.imageSize//args.gamma_S,
-                                         args.viewSize, args.viewSize, args.channels])
-    groundtruth = tf.placeholder(tf.float32, [args.batchSize, args.imageSize, args.imageSize, args.viewSize,
-                                              args.viewSize, args.channels])
+    if args.gamma_A == 0:    # 3x3 -> 7x7
+        inputs = tf.placeholder(tf.float32, [args.batchSize, args.imageSize, args.imageSize, 3, 3, args.channels])
+        groundtruth = tf.placeholder(tf.float32, [args.batchSize, args.imageSize, args.imageSize, 7, 7, args.channels])
+    elif args.gamma_A == 2:  # 5x5 -> 9x9
+        inputs = tf.placeholder(tf.float32, [args.batchSize, args.imageSize, args.imageSize, 5, 5, args.channels])
+        groundtruth = tf.placeholder(tf.float32, [args.batchSize, args.imageSize, args.imageSize, 9, 9, args.channels])
+    elif args.gamma_A == 3:  # 3x3 -> 9x9
+        inputs = tf.placeholder(tf.float32, [args.batchSize, args.imageSize, args.imageSize, 3, 3, args.channels])
+        groundtruth = tf.placeholder(tf.float32, [args.batchSize, args.imageSize, args.imageSize, 9, 9, args.channels])
+    elif args.gamma_A == 4:  # 2x2 -> 8x8
+        inputs = tf.placeholder(tf.float32, [args.batchSize, args.imageSize, args.imageSize, 2, 2, args.channels])
+        groundtruth = tf.placeholder(tf.float32, [args.batchSize, args.imageSize, args.imageSize, 8, 8, args.channels])
+    else:
+        inputs = None
+        groundtruth = None
+    # groundtruth = tf.placeholder(tf.float32, [args.batchSize, args.imageSize, args.imageSize, args.viewSize,
+    #                                           args.viewSize, args.channels])
     is_training = tf.placeholder(tf.bool, [])
     learning_rate = tf.placeholder(tf.float32, [])
     
@@ -178,8 +191,8 @@ def main(args):
 
     # ============ Load the Train / Test Data ============ #
     logging.info("===> Loading the Training and Test Datasets")
-    trainlist = glob.glob(os.path.join(args.datadir, "MSTrain/5x5/*/*.npy"))
-    testlist = glob.glob(os.path.join(args.datadir, "MSTest/5x5/*.npy"))
+    trainlist = glob.glob(os.path.join(args.datadir, "MSTrain/9x9/*/*.npy"))
+    testlist = glob.glob(os.path.join(args.datadir, "MSTest/9x9/*.npy"))
 
     BESTPSNR = 0.0
     BESTSSIM = 0.0
@@ -207,7 +220,7 @@ def main(args):
 
         for ii in range(num_iter):
             y_batch = np.load(trainlist[ii])
-            x_batch = downsampling(y_batch, rs=args.gamma_S, ra=args.gamma_A, nSig=1.2)
+            y_batch, x_batch = downsampling(y_batch, rs=args.gamma_S, ra=args.gamma_A)
 
             y_batch = y_batch.astype(np.float32) / 255.
             x_batch = x_batch.astype(np.float32) / 255.
@@ -219,8 +232,12 @@ def main(args):
                 x = np.expand_dims(x_batch[j], axis=0)
                 y = np.expand_dims(y_batch[j], axis=0)
 
-                _, aloss, sloss, tloss, recons = sess.run([train_op, model.angular_loss, model.spatial_loss, model.loss, model.Recons],
-                                                          feed_dict={inputs: x, groundtruth: y, is_training: True, learning_rate: lr})
+                _, aloss, sloss, tloss, recons = sess.run([train_op, model.angular_loss, model.spatial_loss,
+                                                           model.loss, model.Recons],
+                                                          feed_dict={inputs: x,
+                                                                     groundtruth: y,
+                                                                     is_training: True,
+                                                                     learning_rate: lr})
 
                 angular_loss += aloss
                 spatial_loss += sloss
@@ -246,7 +263,7 @@ def main(args):
 
         for kk in range(num_testiter):
             y_batch = np.load(testlist[kk])
-            x_batch = downsampling(y_batch, rs=args.gamma_S, ra=args.gamma_A, nSig=1.2)
+            y_batch, x_batch = downsampling(y_batch, rs=args.gamma_S, ra=args.gamma_A)
 
             y_batch = y_batch.astype(np.float32) / 255.
             x_batch = x_batch.astype(np.float32) / 255.
