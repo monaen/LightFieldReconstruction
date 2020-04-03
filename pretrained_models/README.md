@@ -2,10 +2,50 @@
 
 ## Instructions
 
-* Download the pretrained model (HDDRNet Sx2)
+* Download the pretrained model **HDDRNet** for Sx2 task
 ```
 # pwd = PATH TO LightFieldReconstruction
 
 cd pretrained_models
 bash download_pretrained_models_HDDRNet_Sx2.sh
+```
+
+* Download the pretrained model **HDDRNet** for Sx3 task
+```
+# pwd = PATH TO LightFieldReconstruction
+
+cd pretrained_models
+bash download_pretrained_models_HDDRNet_Sx3.sh
+```
+
+* Download the pretrained model **HDDRNet** for Sx4 task
+```
+# pwd = PATH TO LightFieldReconstruction
+
+cd pretrained_models
+bash download_pretrained_models_HDDRNet_Sx4.sh
+```
+
+
+
+* Download the pretrained model **M-HDDRNet** for Sx2 task
+```
+# pwd = PATH TO LightFieldReconstruction
+
+cd pretrained_models
+bash download_pretrained_models_M-HDDRNet_Sx2.sh
+```
+* Download the pretrained model **M-HDDRNet** for Sx3 task
+```
+# pwd = PATH TO LightFieldReconstruction
+
+cd pretrained_models
+bash download_pretrained_models_M-HDDRNet_Sx3.sh
+```
+* Download the pretrained model **M-HDDRNet** for Sx4 task
+```
+# pwd = PATH TO LightFieldReconstruction
+
+cd pretrained_models
+bash download_pretrained_models_M-HDDRNet_Sx4.sh
 ```
