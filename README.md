@@ -59,6 +59,8 @@ Paper
   year         = {2020}
 }
 ```
+## Acknowledgement
+Our code is released under [MIT License](https://github.com/monaen/LightFieldReconstruction/blob/master/LICENSE). We would like to appreciate the GPU support from **Lee Ultrasound Imaging Group** of [Prof.Wei-Ning Lee](https://www.eee.hku.hk/~wnlee/people.html)
 
 ## TODO List
 * T-PAMI
