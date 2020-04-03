@@ -23,5 +23,25 @@
 # |     email:  u3003637@connect.hku.hk  |   nanmeng.uestc@hotmail.com                                                 | #
 # ====================================================================================================================== #
 
-# This scripts downloads the human somatic cell dataset (large) and unzips it.
+# This script downloads the pretrained model of M-HDDRNet for Sx4 task and unzips it.
 # DIR = "$( cd "$(dirname "$0")" ; pwd -P )"
+
+echo "Downloading the pretrained model of M-HDDRNet for Sx4 task ........"
+
+wget --no-check-certificate https://github.com/monaen/LightFieldReconstruction/raw/storage/pretrained_models/M-HDDRNet/Sx4/M-HDDRNet_Sx4.part01.rar
+wget --no-check-certificate https://github.com/monaen/LightFieldReconstruction/raw/storage/pretrained_models/M-HDDRNet/Sx4/M-HDDRNet_Sx4.part02.rar
+wget --no-check-certificate https://github.com/monaen/LightFieldReconstruction/raw/storage/pretrained_models/M-HDDRNet/Sx4/M-HDDRNet_Sx4.part03.rar
+wget --no-check-certificate https://github.com/monaen/LightFieldReconstruction/raw/storage/pretrained_models/M-HDDRNet/Sx4/M-HDDRNet_Sx4.part04.rar
+wget --no-check-certificate https://github.com/monaen/LightFieldReconstruction/raw/storage/pretrained_models/M-HDDRNet/Sx4/M-HDDRNet_Sx4.part05.rar
+wget --no-check-certificate https://github.com/monaen/LightFieldReconstruction/raw/storage/pretrained_models/M-HDDRNet/Sx4/M-HDDRNet_Sx4.part06.rar
+wget --no-check-certificate https://github.com/monaen/LightFieldReconstruction/raw/storage/pretrained_models/M-HDDRNet/Sx4/M-HDDRNet_Sx4.part07.rar
+wget --no-check-certificate https://github.com/monaen/LightFieldReconstruction/raw/storage/pretrained_models/M-HDDRNet/Sx4/M-HDDRNet_Sx4.part08.rar
+wget --no-check-certificate https://github.com/monaen/LightFieldReconstruction/raw/storage/pretrained_models/M-HDDRNet/Sx4/M-HDDRNet_Sx4.part09.rar
+wget --no-check-certificate https://github.com/monaen/LightFieldReconstruction/raw/storage/pretrained_models/M-HDDRNet/Sx4/M-HDDRNet_Sx4.part10.rar
+
+echo "Unzipping ........"
+
+unrar x M-HDDRNet_Sx4.part01.rar && rm -f M-HDDRNet_Sx4.part*.rar
+
+echo "Done."
+
