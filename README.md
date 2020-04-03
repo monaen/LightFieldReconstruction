@@ -26,6 +26,7 @@ git clone https://github.com/monaen/LightFieldReconstruction.git --branch master
 ```
 
 ## Training
+* Training models for spatial super-resolution tasks (Sx2, Sx3, and Sx4)
 ```commandline
 python train_SpatialSR.py
 ```
