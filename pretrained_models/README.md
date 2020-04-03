@@ -2,9 +2,10 @@
 
 ## Instructions
 
-* Download the pretrained model
+* Download the pretrained model (HDDRNet Sx2)
 ```
-# pwd=PATH TO LightFieldReconstruction
+# pwd = PATH TO LightFieldReconstruction
+
 cd pretrained_models
-bash 
+bash download_pretrained_models_HDDRNet_Sx2.sh
 ```
