@@ -27,6 +27,7 @@ git clone https://github.com/monaen/LightFieldReconstruction.git --branch master
 
 ## Training
 ```commandline
+python train_SpatialSR.py
 ```
 
 ## Evaluation
@@ -34,7 +35,11 @@ git clone https://github.com/monaen/LightFieldReconstruction.git --branch master
 ```
 
 ## Using the pretrained model
+To download the pretrained mdoels, please change the directory into the folder `pretrained_models` and run the corresponding bash files. For example, to download the HDDRNet_Sx4 pretrained model, 
 ```commandline
+# path = Path to LightFieldReconstruction
+cd pretrained_models
+bash download_pretrained_models_HDDRNet_Sx4.sh
 ```
 
 
