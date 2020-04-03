@@ -66,10 +66,11 @@ Paper
 - [x] Spatial super-resolution 3x framework.
 - [x] Spatial super-resolution 4x framework.
 - [x] Angular super-resolution 2x (5x5->9x9) framework.
+- [x] Angular super-resolution 2.3x (3x3->7x7) framework.
 - [x] Angular super-resolution 3x (3x3->9x9) framework.
 - [x] Angular super-resolution 4x (2x2->8x8) framework.
 - [x] Spatial super-resolution 2x Angular super-resolution 2x framework.
-- [x] The pretrained models.
+- [x] The pretrained models for spatial Sx2, Sx3, Sx4.
 - [ ] Training data.
 - [ ] Testing data.
 - [ ] Analysis preparation.
@@ -78,6 +79,7 @@ Paper
 - [ ] Spatial super-resolution 3x framework and the pretrained model.
 - [ ] Spatial super-resolution 4x framework and the pretrained model.
 - [ ] Angular super-resolution 2x (5x5->9x9) framework and the pretrained model.
+- [ ] Angular super-resolution 2.3x (3x3->7x7) framework and the pretrained model.
 - [ ] Angular super-resolution 3x (3x3->9x9) framework and the pretrained model.
 - [ ] Angular super-resolution 4x (2x2->8x8) framework and the pretrained model.
 - [ ] Other materials.
