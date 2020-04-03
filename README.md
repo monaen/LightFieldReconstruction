@@ -64,7 +64,7 @@ Paper
 - [x] Angular super-resolution 3x (3x3->9x9) framework.
 - [x] Angular super-resolution 4x (2x2->8x8) framework.
 - [x] Spatial super-resolution 2x Angular super-resolution 2x framework.
-- [ ] The pretrained models.
+- [x] The pretrained models.
 - [ ] Training data.
 - [ ] Testing data.
 - [ ] Analysis preparation.
