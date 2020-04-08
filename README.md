@@ -31,7 +31,14 @@ git clone https://github.com/monaen/LightFieldReconstruction.git --branch master
 ```commandline
 python train_SpatialSR.py --gamma_S 4 --verbose --perceptual_loss
 ```
-
+* Training the model for angular super-resolution (e.g. Ax4)
+```commandline
+python train_ViewSysthesis.py --gamma_A 4 --verbose
+```
+* Training the model for spatio-angular super-resolution (e.g. Sx2Ax2)
+```commandline
+python train_ViewSysthesis.py --gamma_S 2 --gamma_A 2 --verbose --perceptual_loss
+```
 
 ```commandline
 # usage: train_SpatialSR.py [-h] [--datadir DATADIR] [--lr_start LR_START]
