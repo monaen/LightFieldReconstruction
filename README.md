@@ -62,8 +62,8 @@ optional arguments:
   --start_epoch             The total number of crops for each light field
   --gamma_S {1,2,3,4}       Spatial scaling factor
   --gamma_A {0,1,2,3,4}     Angular scaling factor, '0' represents 3x3->7x7
-  --num_GRL_HRB             The number of HRB in GRLNet
-  --num_SRe_HRB             The number of HRB in SReNet
+  --num_GRL_HRB             The number of HRB in GRLNet (only for AAAI model)
+  --num_SRe_HRB             The number of HRB in SReNet (only for AAAI model)
   --resume                  Need to resume the pretrained model or not
   --select_gpu              Select the gpu for training or evaluation
   --perceptual_loss         Need to use perceptual loss or not, if true, need to set the vgg_model item
