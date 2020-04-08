@@ -27,10 +27,12 @@ git clone https://github.com/monaen/LightFieldReconstruction.git --branch master
 
 ## Training
 #### Training models for spatial super-resolution tasks (Sx2, Sx3, and Sx4)
-* Training the model for spatial 4x
+* Training the model for spatial super-resolution (e.g. Sx4)
 ```commandline
-python train_SpatialSR.py --verbose --gamma_S 4
+python train_SpatialSR.py --gamma_S 4 --verbose --perceptual_loss
 ```
+
+
 ```commandline
 # usage: train_SpatialSR.py [-h] [--datadir DATADIR] [--lr_start LR_START]
 #                           [--lr_beta1 LR_BETA1] [--batchSize BATCHSIZE]
