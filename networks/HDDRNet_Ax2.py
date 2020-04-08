@@ -78,14 +78,14 @@ class HDDRNet(object):
                 x = tf.add_n([x, source])
             # ============================= Upsampling ============================= #
             with tf.variable_scope('conv4d3'):
-                x = conv4d(x, 64, 6*5*5, kernel_size_1=3, kernel_size_2=5, padding='SAME',
+                x = conv4d(x, 64, 3*9*9, kernel_size_1=3, kernel_size_2=5, padding='SAME',
                            trainable=True, verbose=verbose)
-                x = angular_pixel_shuffle(x, rv_in=3, rv_out=5, verbose=verbose)
+                x = angular_pixel_shuffle(x, rv_in=5, rv_out=9, verbose=verbose)
                 x = leakyrelu(x, verbose=verbose)
 
             # ====================== Spatial Details Recovery ====================== #
             with tf.variable_scope('conv4d4'):
-                x = conv4d(x, 54, 64, kernel_size_1=3, kernel_size_2=3, padding='SAME',
+                x = conv4d(x, 3*5*5, 64, kernel_size_1=3, kernel_size_2=3, padding='SAME',
                            trainable=True, verbose=verbose)
                 source2 = x
 

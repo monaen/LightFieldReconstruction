@@ -49,9 +49,9 @@ parser.add_argument("--gamma_A", type=int, default=2, choices=[0, 1, 2, 3, 4],
                     help="Angular scaling factor, '0' represents 3x3->7x7")
 parser.add_argument("--num_GRL_HRB", type=int, default=5, help="The number of HRB in GRLNet")
 parser.add_argument("--num_SRe_HRB", type=int, default=3, help="The number of HRB in SReNet")
-parser.add_argument("--resume", type=bool, default=False, help="Need to resume the pretrained model or not")
-parser.add_argument("--select_gpu", type=str, default="1", help="Select the gpu for training or evaluation")
-parser.add_argument("--perceptual_loss", type=bool, default=False,
+parser.add_argument("--resume", default=False, action="store_true", help="Need to resume the pretrained model or not")
+parser.add_argument("--select_gpu", type=str, default="0", help="Select the gpu for training or evaluation")
+parser.add_argument("--perceptual_loss", default=False, action="store_true",
                     help="Need to use perceptual loss or not, if true, need to set the vgg_model item")
 parser.add_argument("--vgg_model", type=str, default="vgg19/weights/latest", help="Pretrained VGG model path")
 parser.add_argument("--save_folder", type=str, default="checkpoints", help="model save path")
@@ -155,8 +155,8 @@ def main(args):
         inputs = tf.placeholder(tf.float32, [None, None, None, 3, 3, args.channels])
         groundtruth = tf.placeholder(tf.float32, [None, None, None, 7, 7, args.channels])
     elif args.gamma_A == 2:  # 5x5 -> 9x9
-        inputs = tf.placeholder(tf.float32, [None, None, None, 3, 3, args.channels])
-        groundtruth = tf.placeholder(tf.float32, [None, None, None, 5, 5, args.channels])
+        inputs = tf.placeholder(tf.float32, [None, None, None, 5, 5, args.channels])
+        groundtruth = tf.placeholder(tf.float32, [None, None, None, 9, 9, args.channels])
     elif args.gamma_A == 3:  # 3x3 -> 9x9
         inputs = tf.placeholder(tf.float32, [None, None, None, 3, 3, args.channels])
         groundtruth = tf.placeholder(tf.float32, [None, None, None, 9, 9, args.channels])
