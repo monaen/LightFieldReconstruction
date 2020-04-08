@@ -82,7 +82,7 @@ To download the pretrained mdoels, please change the directory into the folder `
 cd pretrained_models
 bash download_pretrained_models_HDDRNet_Sx4.sh
 ```
-
+We provide a detailed [instruction](https://github.com/monaen/LightFieldReconstruction/tree/master/pretrained_models) on how to download the pretrained models for differnet SR models and tasks.
 
 ## Reference
 Paper
