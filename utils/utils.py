@@ -13,12 +13,28 @@ from scipy.signal import convolve2d
 
 
 # ================================================== #
-#           Statistic info of the network            #
+#                Statistical Functions               #
 # ================================================== #
+
 def count_number_trainable_params():
-    '''
+    """
     Counts the number of trainable variables.
-    '''
+
+    :return: The trainable parameters of a network.
+    """
+
+    def params_bytes(vtype):
+        if vtype == "float32_ref":
+            return 32 / 8
+        if vtype == "float64_ref":
+            return 64 / 8
+
+    def get_nb_params_shape(shape):
+        nb_params = 1
+        for dim in shape:
+            nb_params = nb_params * int(dim)
+        return nb_params
+
     total_nb_params = 0
     total_btypes = 0
     for trainable_variable in tf.trainable_variables():
@@ -28,36 +44,26 @@ def count_number_trainable_params():
         total_nb_params = total_nb_params + current_nb_params
         total_btypes = total_btypes + current_nb_params * params_bytes(variable_type)
     
-    return "Model size: {0}K, Space usage: {1}KB ({2:6.2f}MB)".format(total_nb_params/1000,
+    info = "Model size: {0}K, Space usage: {1}KB ({2:6.2f}MB)".format(total_nb_params/1000,
                                                                       total_btypes/1000,
                                                                       total_btypes/1000000.0)
-
-
-def params_bytes(vtype):
-    if vtype == 'float32_ref':
-        return 32 / 8
-    if vtype == 'float64_ref':
-        return 64 / 8
-
-
-def get_nb_params_shape(shape):
-    '''
-    Computes the total number of params for a given shap.
-    Works for any number of shapes etc [D,F] or [W,H,C] computes D*F and W*H*C.
-    '''
-    nb_params = 1
-    for dim in shape:
-        nb_params = nb_params*int(dim)
-    return nb_params
+    print(info)
+    return
 
 
 # ================================================== #
-#               Downsampling methods                 #
+#               Downsampling Methods                 #
 # ================================================== #
+
 def get_gauss_filter(shape=(7, 7), sigma=1.2):
     """
     2D gaussian mask - should give the same result as MATLAB's
-    fspecial('gaussian',[shape],[sigma])
+    fspecial('gaussian',[shape],[sigma]).
+
+    :param shape: window size
+    :param sigma: variance
+
+    :return:      gaussian filter
     """
     m, n = [(ss-1.)/2. for ss in shape]
     y, x = np.ogrid[-m:m+1, -n:n+1]
@@ -70,12 +76,15 @@ def get_gauss_filter(shape=(7, 7), sigma=1.2):
 
 
 def blur(hrlf, psf):
-    '''
-        HR_LF = [batchsize, height, width, sview, tview, channel]
-        
-        
-        return blurred_lfimgs
-    '''
+    """
+    The blur method for light field imaging which generates
+    the low-quality light field.
+
+    :param hrlf: high-resolution light field
+    :param psf:  blur kernel
+
+    :return:     blurred light field
+    """
     blurred_lfimgs = np.zeros_like(hrlf)
     ws = psf.shape[0]
     t = (ws-1) / 2
@@ -148,10 +157,18 @@ def downsampling(data, rs=1, ra=1, nSig=1.2):
 
 
 # ================================================== #
-#                   Metric Methods                   #
+#                   Metric Functions                 #
 # ================================================== #
 
 def psnr(img1, img2):
+    """
+    Metric function to calculate the PSNR value for single image.
+
+    :param img1: input image 1
+    :param img2: input image 2
+
+    :return:     PSNR value
+    """
     mse = np.mean((img1 - img2) ** 2)
     if mse == 0:
         return 100
@@ -160,11 +177,15 @@ def psnr(img1, img2):
 
 
 def lfpsnrs(truth4d, recons4d):
-    ''' The truth4d represents for a single 4d-patches of light field
-        
-        truth4d  = [height, width, sview, tview, channels]
-        recons4d = [height, width, sview, tview, channels]
-    '''
+    """
+    Metric function to calculate the average PSNR value for a
+    light field.
+
+    :param truth4d:  ground truth light field
+    :param recons4d: reconstructed light field
+
+    :return:         average PSNR value for a light field
+    """
     assert truth4d.shape == recons4d.shape, 'The prediction and label should be same size.'
     assert truth4d.dtype == 'uint8', 'The ground truth should be uint8 format within range (0, 255)'
     assert recons4d.dtype == 'uint8', 'The inputs should be uint8 format within range (0, 255)'
@@ -183,11 +204,14 @@ def lfpsnrs(truth4d, recons4d):
 
 
 def batchmeanpsnr(truth, pred):
-    ''' This function calculate the average psnr over a batchsize of light field patches and
-        the size of each batch equal to the length of inputs
-        The inputs should be uint8 format within range (0, 1)
-    '''
-    
+    """
+    Metric function to calculate the average PSNR value for a batch of
+    light fields.
+
+    :param truth: a batch of ground truth light field
+    :param pred:  a batch of reconstructed light field
+    :return:      average PSNR value for a batch of light field
+    """
     batchmean_psnr = 0
     for i in range(len(pred)):
         _, meanpsnr = lfpsnrs(np.uint8(truth[i]*255.), np.uint8(pred[i]*255.))
@@ -198,7 +222,17 @@ def batchmeanpsnr(truth, pred):
 
 
 def ssim_exact(img1, img2, sd=1.5, C1=0.01**2, C2=0.03**2):
+    """
+    Python version of Matlab SSIM function to calculate the SSIM value of single image.
 
+    :param img1: input image 1
+    :param img2: input image 2
+    :param sd:   standard
+    :param C1:   parameter C1
+    :param C2:   parameter C2
+
+    :return:     SSIM value
+    """
     mu1 = gaussian_filter(img1, sd)
     mu2 = gaussian_filter(img2, sd)
     mu1_sq = mu1 * mu1
@@ -217,11 +251,15 @@ def ssim_exact(img1, img2, sd=1.5, C1=0.01**2, C2=0.03**2):
 
 
 def lfssims(truth4d, recons4d):
-    ''' The truth4d represents for a single 4d-patches of light field
-        
-        truth4d  = [height, width, sview, tview, channels]
-        recons4d = [height, width, sview, tview, channels]
-    '''
+    """
+    Metric function to calculate the average SSIM value for a
+    light field.
+
+    :param truth4d:  ground truth light field
+    :param recons4d: reconstructed light field
+
+    :return:         average SSIM value for a light field
+    """
     assert truth4d.shape == recons4d.shape, 'The prediction and label should be same size.'
     
     h, w, s, t, c = truth4d.shape
@@ -238,11 +276,15 @@ def lfssims(truth4d, recons4d):
 
 
 def batchmeanssim(truth, pred):
-    ''' This function calculate the average psnr over a batchsize of light field patches and
-        the size of each batch equal to the length of inputs
-        The inputs should be uint8 format within range (0, 1)
-    '''
-    
+    """
+    Metric function to calculate the average SSIM value for a batch of
+    light fields.
+
+    :param truth: a batch of ground truth light field
+    :param pred:  a batch of reconstructed light field
+
+    :return:      average SSIM value for a batch of light field
+    """
     batchmean_ssim = 0
     for i in range(len(pred)):
         _, meanssim = lfssims(np.uint8(truth[i]*255.), np.uint8(pred[i]*255.))
@@ -255,9 +297,38 @@ def batchmeanssim(truth, pred):
 # ================================================== #
 #        Split patches using overlap strides         #
 # ================================================== #
+
+def shave4d(img4d, border=(3, 3)):
+    """
+    Shave the input light field by a given border.
+
+    :param img4d:  input light field
+    :param border: border values
+
+    :return:       shaved light field
+    """
+    h_border, w_border = border
+    if (h_border != 0) and (w_border != 0):
+        img4d_shaved = img4d[:, h_border:-h_border, w_border:-w_border, :, :, :]
+    elif (h_border != 0) and (w_border == 0):
+        img4d_shaved = img4d[:, h_border:-h_border, :, :, :, :]
+    elif (h_border == 0) and (w_border != 0):
+        img4d_shaved = img4d[:, :, w_border:-w_border, :, :, :]
+    else:
+        img4d_shaved = img4d[:, :, :, :, :, :]
+    return img4d_shaved
+
+
 def img4d_splitpatches(img4d, patchsize=96, stride=30):
-    ''' img4d = [batchsize, height, width, s_view, t_view, channels]
-    '''
+    """
+    Split the entire light filed into patches.
+
+    :param img4d:     input light field
+    :param patchsize: size of each cropped patch
+    :param stride:    stride between adjacent cropped regions
+
+    :return:          cropped patches
+    """
     _, height, width, sSize, tSize, channels = img4d.shape
     
     patch_squence = []
@@ -287,16 +358,25 @@ def img4d_splitpatches(img4d, patchsize=96, stride=30):
     return patch_squence, np.array(indices_squence)
 
 
-def shaved_img4d_reconstruct(patch_squence, indices_squence, border=(3, 3)):
-    
-    _, height, _, width = indices_squence[-1]
-    batchsize, _, _, s, t, channels = patch_squence[0].shape
+def shaved_img4d_reconstruct(patch_sequence, indices_sequence, border=(3, 3)):
+    """
+    Reconstruction function to recover the original light field from
+    multiple cropped patches.
+
+    :param patch_sequence:   a sequence of patches
+    :param indices_sequence: indices of the input sequence of patches
+    :param border:           shaved border
+
+    :return:                 shaved light field
+    """
+    _, height, _, width = indices_sequence[-1]
+    batchsize, _, _, s, t, channels = patch_sequence[0].shape
     
     img4d = np.zeros([1, height, width, s, t, channels], dtype=np.float32)
-    for i in range(len(patch_squence)):
-        h_start, h_off, w_start, w_off = indices_squence[i]
+    for i in range(len(patch_sequence)):
+        h_start, h_off, w_start, w_off = indices_sequence[i]
         img4d[0, h_start+border[0]:h_off-border[0],
-              w_start+border[1]:w_off-border[1], ...] = shave4d(patch_squence[i], border)
+              w_start+border[1]:w_off-border[1], ...] = shave4d(patch_sequence[i], border)
 
     img4d = shave4d(img4d, border)
     return img4d
@@ -305,340 +385,308 @@ def shaved_img4d_reconstruct(patch_squence, indices_squence, border=(3, 3)):
 # ================================================== #
 #                Read light field images             #
 # ================================================== #
-
-def imread(path, is_grayscale=False):
-    """
-    Read image using its path.
-    Default value is gray-scale, and image is read by YCbCr format as the paper said.
-    """
-    if is_grayscale:
-        return scipy.misc.imread(path, mode='YCbCr').astype(np.float32)[:, :, :1]
-    else:
-        return scipy.misc.imread(path, mode='RGB').astype(np.float32)
-
-
-def read_single_lf4d(lf_folder, viewSize=5, channels=3, normalize=False):
-    img_list = glob.glob(os.path.join(lf_folder, '*.jpg'))
-    suffix = [re.findall('([0-9]+x[0-9]+)', i)[0] for i in img_list]
-    sorted_suffix = sorted(suffix, key=lambda x: (int(x.split('x')[0]), int(x.split('x')[1])))
-    # print 'sorted_suffix: ', sorted_suffix
-    
-    ori_view = np.sqrt(len(img_list)).astype(np.int)
-    v_start = (ori_view - viewSize) / 2
-    
-    height, width, _ = imread(img_list[0]).shape
-    if normalize == True:
-        lf = np.zeros([1, height, width, viewSize, viewSize, channels], dtype=np.float32)
-    else:
-        lf = np.zeros([1, height, width, viewSize, viewSize, channels], dtype=np.uint8)
-    is_grayscale = True
-    if channels == 3:
-        is_grayscale = False
-    
-    for i in range(viewSize):
-        for j in range(viewSize):
-            select_suf = sorted_suffix[v_start+(i+v_start)*ori_view+j]
-            img_ = imread(img_list[suffix.index(select_suf)], is_grayscale)
-            if normalize == True:
-                lf[0, :, :, i, j, :] = Normal(img_)
-            else:
-                lf[0, :, :, i, j, :] = img_
-    return lf
-
-
-def read_lf4d(filenames, viewSize=5, is_grayscale=False):
-    assert not isinstance(filenames, basestring), 'The 1st input is not a list'
-    
-    batchNum = len(filenames)
-    if is_grayscale:
-        channels = 1
-    else:
-        channels = 3
-
-    for i in range(batchNum):
-        tmpimgs = read_single_lf4d(filenames[i], viewSize=viewSize, channels=channels)
-        if i == 0:
-            lfimgs = tmpimgs
-        else:
-            lfimgs = np.vstack([lfimgs, tmpimgs])
-    return lfimgs
-
-
-def read_batch_lf4d(filenames, viewSize=5, is_grayscale=False, iter=0, batch_size=30):
-
-    if filenames is None:
-        raise ValueError('The input filelist is empty.')
-    
-    # ============ Choose batchsize of filelist ============ #
-    num_files = len(filenames)
-    if batch_size is None:
-        batch_size = num_files
-    
-    filestart = iter * batch_size % num_files
-    fileend = (iter+1) * batch_size % num_files
-    if filestart >= fileend:
-        batch_files = filenames[filestart:] + filenames[:fileend]
-    else:
-        batch_files = filenames[filestart:fileend]
-
-    batchNum = len(batch_files)
-    if is_grayscale:
-        channels = 1
-    else:
-        channels = 3
-    
-    templf = read_single_lf4d(filenames[0], viewSize=viewSize, channels=channels)
-    _, h, w, s, t, c = templf.shape
-    lfimgs = np.zeros([batch_size, h, w, s, t, c], dtype=np.float32)
-
-    for i in range(batchNum):
-        tmpimgs = read_single_lf4d(filenames[i], viewSize=viewSize, channels=channels)[:, :h, :w, ...]
-        lfimgs[i] = tmpimgs
-
-    return lfimgs.astype(np.uint8)
-
-
-# ================================================== #
-#                 Processing functions               #
-# ================================================== #
-
-def rgb2gray4d(rgb):
-
-    r, g, b = rgb[..., 0], rgb[..., 1], rgb[..., 2]
-    gray = 0.2989 * r + 0.5870 * g + 0.1140 * b
-    gray = gray.reshape([i for i in gray.shape] + [-1])
-    
-    return gray
-
-
-def modcrop(image, scale=3):
-    """
-    To scale down and up the original image, first thing to do is to have no remainder while scaling operation.
-    
-    We need to find modulo of height (and width) and scale factor.
-    Then, subtract the modulo from height (and width) of original image size.
-    There would be no remainder even after scaling operation.
-    """
-    if len(image.shape) == 3:
-        h, w, _ = image.shape
-        h = h - np.mod(h, scale)
-        w = w - np.mod(w, scale)
-        image = image[0:h, 0:w, :]
-    else:
-        h, w = image.shape
-        h = h - np.mod(h, scale)
-        w = w - np.mod(w, scale)
-        image = image[0:h, 0:w]
-    return image
-
-
-def merge(images, size):
-    h, w = images.shape[1], images.shape[2]
-    img = np.zeros((h*size[0], w*size[1], 1), dtype=np.float32)
-    for idx, image in enumerate(images):
-        i = idx % size[1]
-        j = idx // size[1]
-        img[j*h:j*h+h, i*w:i*w+w, :] = image
-
-    return img
-
-
-def Normal(_data):
-    ''' This function return the normalization of image data
-
-        input :  image:               _data
-
-        output:  normalized_image:    data
-    '''
-    data = _data.copy()
-    data = data.astype(np.float32)
-    data = (data-np.min(data)) / (np.max(data) - np.min(data))
-    return data
-
-
-def shave4d(img4d, border=(3, 3)):
-    h_border, w_border = border
-    if (h_border != 0) and (w_border != 0):
-        img4d_shaved = img4d[:, h_border:-h_border, w_border:-w_border, :, :, :]
-    elif (h_border != 0) and (w_border == 0):
-        img4d_shaved = img4d[:, h_border:-h_border, :, :, :, :]
-    elif (h_border == 0) and (w_border != 0):
-        img4d_shaved = img4d[:, :, w_border:-w_border, :, :, :]
-    else:
-        img4d_shaved = img4d[:, :, :, :, :, :]
-    return img4d_shaved
-
-
-def img4duint8(img4d):
-    ''' img4d = [batchsize=1, height, width, sview, tview, channels]
-    '''
-    batchsize, height, width, sview, tview, channels = img4d.shape
-    uint8img4d = np.zeros_like(img4d, dtype=np.float32)
-    for i in range(sview):
-        for j in range(tview):
-            uint8img4d[0, :, :, i, j, :] = np.uint8(img4d[0, :, :, i, j, :]*255.)
-    return uint8img4d
-
-
-# ================================================== #
-#                   Reading the Data                 #
-# ================================================== #
-
-
-def crop_center(img, cropsize):
-    '''
-    img : [H, W, C]
-    '''
-    h, w, c = img.shape
-    return img[(h-cropsize)/2:(h+cropsize)/2, (w-cropsize)/2:(w+cropsize)/2, :]
-
-
-def read_lf(lf_folder, imageSize=96, viewSize=5, channels=3):
-    '''read single light field images'''
-    
-    img_list = glob.glob(os.path.join(lf_folder, '*.jpg'))
-    suffix = [re.findall('([0-9]+x[0-9]+)', i)[0] for i in img_list]
-    sorted_suffix = sorted(suffix, key=lambda x: (int(x.split('x')[0]), int(x.split('x')[1])))
-    
-    ori_view = np.sqrt(len(img_list)).astype(np.int)
-    v_start = (ori_view - viewSize) / 2
-    
-    lf_image = np.zeros([channels, imageSize, imageSize, viewSize, viewSize], dtype=np.float32)
-    
-    if channels == 3:
-        for i in range(viewSize):
-            for j in range(viewSize):
-                select_suf = sorted_suffix[v_start+(i+v_start)*ori_view+j]
-                img_ = scipy.misc.imread(img_list[suffix.index(select_suf)])
-
-                # img_ = crop_center(img_, imageSize)
-                img_ = crop_center(img_, 240)
-                img_ = imresize(img_, (imageSize, imageSize))
-                lf_image[:, :, :, i, j] = Normal(img_.transpose(2, 0, 1))
-    
-    elif channels == 1:
-        for i in range(viewSize):
-            for j in range(viewSize):
-                select_suf = sorted_suffix[v_start+(i+v_start)*ori_view+j]
-                img_ = scipy.misc.imread(img_list[suffix.index(select_suf)], mode = 'YCbCr')
-
-                # img_ = crop_center(img_, imageSize)
-                img_ = crop_center(img_, 240)
-                img_ = imresize(img_, (imageSize, imageSize))[:, :, :1]
-                lf_image[:, :, :, i, j] = Normal(img_.transpose(2, 0, 1))
-    
-    return lf_image
-
-
-def get_inputs(filenames=None, imageSize=96, viewSize=9, channels=3, iter=0, batch_size=None):
-    # Read each Lightfield file
-    if filenames is None:
-        raise ValueError('The input filelist is empty.')
-    
-    ## choose batchsize of filelist
-    num_files = len(filenames)
-    if batch_size is None:
-        batch_size = num_files
-    
-    filestart = iter * batch_size % num_files
-    fileend   = (iter+1) * batch_size % num_files
-    if filestart >= fileend:
-        batch_files = filenames[filestart:] + filenames[:fileend]
-    else:
-        batch_files = filenames[filestart:fileend]
-    
-    
-    ## read images
-    batchNum = len(batch_files)
-    labels = np.zeros([batchNum, channels, imageSize, imageSize, viewSize, viewSize], dtype=np.float32)
-    
-    # print 'start reading images ...'
-    for i in range(batchNum):
-        labels[i] = read_lf(batch_files[i], imageSize=imageSize, 
-                            viewSize=viewSize, channels=channels)
-    # print 'finished.'
-    # features = labels[:,:,::spacial_rate,::spacial_rate,::view_rate,::view_rate]
-    
-    labels = labels.transpose(0,2,3,4,5,1)
-    
-    return labels
-
-
-def read_lf_randcrop(lf_folder, imageSize=96, viewSize=5, channels=3):
-    '''read single light field images'''
-    
-    img_list = glob.glob(os.path.join(lf_folder, '*.jpg'))
-    suffix = [re.findall('([0-9]+x[0-9]+)', i)[0] for i in img_list]
-    sorted_suffix = sorted(suffix, key=lambda x: (int(x.split('x')[0]), int(x.split('x')[1])))
-    # print 'sorted_suffix: ', sorted_suffix
-    
-    ori_view = np.sqrt(len(img_list)).astype(np.int)
-    v_start = (ori_view - viewSize) / 2
-    
-    lf_image = np.zeros([channels, imageSize, imageSize, viewSize, viewSize], dtype=np.float32)
-    height, width, _ = scipy.misc.imread(img_list[0]).shape
-    h_offset = random.randint(60, height-imageSize-60)
-    w_offset = random.randint(80, width-imageSize-80)
-    
-    if channels == 3:
-        for i in range(viewSize):
-            for j in range(viewSize):
-                select_suf = sorted_suffix[v_start+(i+v_start)*ori_view+j]
-                img_ = scipy.misc.imread(img_list[suffix.index(select_suf)])
-
-                # img_ = crop_center(img_, imageSize)
-                # img_ = crop_center(img_, 240)
-                # img_ = imresize(img_, (imageSize,imageSize))
-                img_ = img_[h_offset:h_offset+imageSize, w_offset:w_offset+imageSize, :]
-                lf_image[:,:,:,i,j] = Normal(img_.transpose(2,0,1))
-    
-    elif channels == 1:
-        for i in range(viewSize):
-            for j in range(viewSize):
-                select_suf = sorted_suffix[v_start+(i+v_start)*ori_view+j]
-                img_ = scipy.misc.imread(img_list[suffix.index(select_suf)], mode='YCbCr')
-
-                # img_ = crop_center(img_, imageSize)
-                # img_ = crop_center(img_, 240)
-                # img_ = imresize(img_, (imageSize,imageSize))
-                img_ = img_[h_offset:h_offset+imageSize, w_offset:w_offset+imageSize, :1]
-                lf_image[:,:,:,i,j] = Normal(img_.transpose(2,0,1))
-    
-    return lf_image
-
-
-
-def get_inputs_randcrop(filenames=None, imageSize=96, viewSize=9, channels=3, 
-                        iter=0, batch_size=None):
-    
-    
-    # Read each Lightfield file
-    if filenames is None:
-        raise ValueError('The input filelist is empty.')
-    
-    ## choose batchsize of filelist
-    num_files = len(filenames)
-    if batch_size is None:
-        batch_size = num_files
-    
-    filestart = iter * batch_size % num_files
-    fileend   = (iter+1) * batch_size % num_files
-    if filestart >= fileend:
-        batch_files = filenames[filestart:] + filenames[:fileend]
-    else:
-        batch_files = filenames[filestart:fileend]
-    
-    
-    ## read images
-    batchNum = len(batch_files)
-    labels = np.zeros([batchNum, channels, imageSize, imageSize, viewSize, viewSize], dtype=np.float32)
-    
-    # print 'start reading images ...'
-    for i in range(batchNum):
-        labels[i] = read_lf_randcrop(batch_files[i], imageSize=imageSize, viewSize=viewSize, 
-                                     channels=channels)
-    # print 'finished.'
-    
-    labels = labels.transpose(0, 2, 3, 4, 5, 1)      # reshape the data to : [batchsize, img_h, img_w, view_s, view_t, channels]
-
-    return labels
+#
+# def read_single_lf4d(lf_folder, viewSize=5, channels=3, normalize=False):
+#     img_list = glob.glob(os.path.join(lf_folder, '*.jpg'))
+#     suffix = [re.findall('([0-9]+x[0-9]+)', i)[0] for i in img_list]
+#     sorted_suffix = sorted(suffix, key=lambda x: (int(x.split('x')[0]), int(x.split('x')[1])))
+#     # print 'sorted_suffix: ', sorted_suffix
+#
+#     ori_view = np.sqrt(len(img_list)).astype(np.int)
+#     v_start = (ori_view - viewSize) / 2
+#
+#     height, width, _ = imread(img_list[0]).shape
+#     if normalize == True:
+#         lf = np.zeros([1, height, width, viewSize, viewSize, channels], dtype=np.float32)
+#     else:
+#         lf = np.zeros([1, height, width, viewSize, viewSize, channels], dtype=np.uint8)
+#     is_grayscale = True
+#     if channels == 3:
+#         is_grayscale = False
+#
+#     for i in range(viewSize):
+#         for j in range(viewSize):
+#             select_suf = sorted_suffix[v_start+(i+v_start)*ori_view+j]
+#             img_ = imread(img_list[suffix.index(select_suf)], is_grayscale)
+#             if normalize == True:
+#                 lf[0, :, :, i, j, :] = Normal(img_)
+#             else:
+#                 lf[0, :, :, i, j, :] = img_
+#     return lf
+#
+#
+# def read_lf4d(filenames, viewSize=5, is_grayscale=False):
+#     assert not isinstance(filenames, basestring), 'The 1st input is not a list'
+#
+#     batchNum = len(filenames)
+#     if is_grayscale:
+#         channels = 1
+#     else:
+#         channels = 3
+#
+#     for i in range(batchNum):
+#         tmpimgs = read_single_lf4d(filenames[i], viewSize=viewSize, channels=channels)
+#         if i == 0:
+#             lfimgs = tmpimgs
+#         else:
+#             lfimgs = np.vstack([lfimgs, tmpimgs])
+#     return lfimgs
+#
+#
+# def read_batch_lf4d(filenames, viewSize=5, is_grayscale=False, iter=0, batch_size=30):
+#
+#     if filenames is None:
+#         raise ValueError('The input filelist is empty.')
+#
+#     # ============ Choose batchsize of filelist ============ #
+#     num_files = len(filenames)
+#     if batch_size is None:
+#         batch_size = num_files
+#
+#     filestart = iter * batch_size % num_files
+#     fileend = (iter+1) * batch_size % num_files
+#     if filestart >= fileend:
+#         batch_files = filenames[filestart:] + filenames[:fileend]
+#     else:
+#         batch_files = filenames[filestart:fileend]
+#
+#     batchNum = len(batch_files)
+#     if is_grayscale:
+#         channels = 1
+#     else:
+#         channels = 3
+#
+#     templf = read_single_lf4d(filenames[0], viewSize=viewSize, channels=channels)
+#     _, h, w, s, t, c = templf.shape
+#     lfimgs = np.zeros([batch_size, h, w, s, t, c], dtype=np.float32)
+#
+#     for i in range(batchNum):
+#         tmpimgs = read_single_lf4d(filenames[i], viewSize=viewSize, channels=channels)[:, :h, :w, ...]
+#         lfimgs[i] = tmpimgs
+#
+#     return lfimgs.astype(np.uint8)
+#
+#
+# # ================================================== #
+# #                 Processing functions               #
+# # ================================================== #
+#
+# def rgb2gray4d(rgb):
+#
+#     r, g, b = rgb[..., 0], rgb[..., 1], rgb[..., 2]
+#     gray = 0.2989 * r + 0.5870 * g + 0.1140 * b
+#     gray = gray.reshape([i for i in gray.shape] + [-1])
+#
+#     return gray
+#
+#
+# def modcrop(image, scale=3):
+#     """
+#     To scale down and up the original image, first thing to do is to have no remainder while scaling operation.
+#
+#     We need to find modulo of height (and width) and scale factor.
+#     Then, subtract the modulo from height (and width) of original image size.
+#     There would be no remainder even after scaling operation.
+#     """
+#     if len(image.shape) == 3:
+#         h, w, _ = image.shape
+#         h = h - np.mod(h, scale)
+#         w = w - np.mod(w, scale)
+#         image = image[0:h, 0:w, :]
+#     else:
+#         h, w = image.shape
+#         h = h - np.mod(h, scale)
+#         w = w - np.mod(w, scale)
+#         image = image[0:h, 0:w]
+#     return image
+#
+#
+# def Normal(_data):
+#     """
+#     Normalization function.
+#
+#     :param _data: input data
+#
+#     :return:      normalized data
+#     """
+#     data = _data.copy()
+#     data = data.astype(np.float32)
+#     data = (data-np.min(data)) / (np.max(data) - np.min(data))
+#     return data
+#
+#
+#
+#
+# def img4duint8(img4d):
+#     ''' img4d = [batchsize=1, height, width, sview, tview, channels]
+#     '''
+#     batchsize, height, width, sview, tview, channels = img4d.shape
+#     uint8img4d = np.zeros_like(img4d, dtype=np.float32)
+#     for i in range(sview):
+#         for j in range(tview):
+#             uint8img4d[0, :, :, i, j, :] = np.uint8(img4d[0, :, :, i, j, :]*255.)
+#     return uint8img4d
+#
+#
+# # ================================================== #
+# #                   Reading the Data                 #
+# # ================================================== #
+#
+#
+# def crop_center(img, cropsize):
+#     '''
+#     img : [H, W, C]
+#     '''
+#     h, w, c = img.shape
+#     return img[(h-cropsize)/2:(h+cropsize)/2, (w-cropsize)/2:(w+cropsize)/2, :]
+#
+#
+# def read_lf(lf_folder, imageSize=96, viewSize=5, channels=3):
+#     '''read single light field images'''
+#
+#     img_list = glob.glob(os.path.join(lf_folder, '*.jpg'))
+#     suffix = [re.findall('([0-9]+x[0-9]+)', i)[0] for i in img_list]
+#     sorted_suffix = sorted(suffix, key=lambda x: (int(x.split('x')[0]), int(x.split('x')[1])))
+#
+#     ori_view = np.sqrt(len(img_list)).astype(np.int)
+#     v_start = (ori_view - viewSize) / 2
+#
+#     lf_image = np.zeros([channels, imageSize, imageSize, viewSize, viewSize], dtype=np.float32)
+#
+#     if channels == 3:
+#         for i in range(viewSize):
+#             for j in range(viewSize):
+#                 select_suf = sorted_suffix[v_start+(i+v_start)*ori_view+j]
+#                 img_ = scipy.misc.imread(img_list[suffix.index(select_suf)])
+#
+#                 # img_ = crop_center(img_, imageSize)
+#                 img_ = crop_center(img_, 240)
+#                 img_ = imresize(img_, (imageSize, imageSize))
+#                 lf_image[:, :, :, i, j] = Normal(img_.transpose(2, 0, 1))
+#
+#     elif channels == 1:
+#         for i in range(viewSize):
+#             for j in range(viewSize):
+#                 select_suf = sorted_suffix[v_start+(i+v_start)*ori_view+j]
+#                 img_ = scipy.misc.imread(img_list[suffix.index(select_suf)], mode = 'YCbCr')
+#
+#                 # img_ = crop_center(img_, imageSize)
+#                 img_ = crop_center(img_, 240)
+#                 img_ = imresize(img_, (imageSize, imageSize))[:, :, :1]
+#                 lf_image[:, :, :, i, j] = Normal(img_.transpose(2, 0, 1))
+#
+#     return lf_image
+#
+#
+# def get_inputs(filenames=None, imageSize=96, viewSize=9, channels=3, iter=0, batch_size=None):
+#     # Read each Lightfield file
+#     if filenames is None:
+#         raise ValueError('The input filelist is empty.')
+#
+#     ## choose batchsize of filelist
+#     num_files = len(filenames)
+#     if batch_size is None:
+#         batch_size = num_files
+#
+#     filestart = iter * batch_size % num_files
+#     fileend   = (iter+1) * batch_size % num_files
+#     if filestart >= fileend:
+#         batch_files = filenames[filestart:] + filenames[:fileend]
+#     else:
+#         batch_files = filenames[filestart:fileend]
+#
+#
+#     ## read images
+#     batchNum = len(batch_files)
+#     labels = np.zeros([batchNum, channels, imageSize, imageSize, viewSize, viewSize], dtype=np.float32)
+#
+#     # print 'start reading images ...'
+#     for i in range(batchNum):
+#         labels[i] = read_lf(batch_files[i], imageSize=imageSize,
+#                             viewSize=viewSize, channels=channels)
+#     # print 'finished.'
+#     # features = labels[:,:,::spacial_rate,::spacial_rate,::view_rate,::view_rate]
+#
+#     labels = labels.transpose(0,2,3,4,5,1)
+#
+#     return labels
+#
+#
+# def read_lf_randcrop(lf_folder, imageSize=96, viewSize=5, channels=3):
+#     '''read single light field images'''
+#
+#     img_list = glob.glob(os.path.join(lf_folder, '*.jpg'))
+#     suffix = [re.findall('([0-9]+x[0-9]+)', i)[0] for i in img_list]
+#     sorted_suffix = sorted(suffix, key=lambda x: (int(x.split('x')[0]), int(x.split('x')[1])))
+#     # print 'sorted_suffix: ', sorted_suffix
+#
+#     ori_view = np.sqrt(len(img_list)).astype(np.int)
+#     v_start = (ori_view - viewSize) / 2
+#
+#     lf_image = np.zeros([channels, imageSize, imageSize, viewSize, viewSize], dtype=np.float32)
+#     height, width, _ = scipy.misc.imread(img_list[0]).shape
+#     h_offset = random.randint(60, height-imageSize-60)
+#     w_offset = random.randint(80, width-imageSize-80)
+#
+#     if channels == 3:
+#         for i in range(viewSize):
+#             for j in range(viewSize):
+#                 select_suf = sorted_suffix[v_start+(i+v_start)*ori_view+j]
+#                 img_ = scipy.misc.imread(img_list[suffix.index(select_suf)])
+#
+#                 # img_ = crop_center(img_, imageSize)
+#                 # img_ = crop_center(img_, 240)
+#                 # img_ = imresize(img_, (imageSize,imageSize))
+#                 img_ = img_[h_offset:h_offset+imageSize, w_offset:w_offset+imageSize, :]
+#                 lf_image[:,:,:,i,j] = Normal(img_.transpose(2,0,1))
+#
+#     elif channels == 1:
+#         for i in range(viewSize):
+#             for j in range(viewSize):
+#                 select_suf = sorted_suffix[v_start+(i+v_start)*ori_view+j]
+#                 img_ = scipy.misc.imread(img_list[suffix.index(select_suf)], mode='YCbCr')
+#
+#                 # img_ = crop_center(img_, imageSize)
+#                 # img_ = crop_center(img_, 240)
+#                 # img_ = imresize(img_, (imageSize,imageSize))
+#                 img_ = img_[h_offset:h_offset+imageSize, w_offset:w_offset+imageSize, :1]
+#                 lf_image[:,:,:,i,j] = Normal(img_.transpose(2,0,1))
+#
+#     return lf_image
+#
+#
+#
+# def get_inputs_randcrop(filenames=None, imageSize=96, viewSize=9, channels=3,
+#                         iter=0, batch_size=None):
+#
+#
+#     # Read each Lightfield file
+#     if filenames is None:
+#         raise ValueError('The input filelist is empty.')
+#
+#     ## choose batchsize of filelist
+#     num_files = len(filenames)
+#     if batch_size is None:
+#         batch_size = num_files
+#
+#     filestart = iter * batch_size % num_files
+#     fileend   = (iter+1) * batch_size % num_files
+#     if filestart >= fileend:
+#         batch_files = filenames[filestart:] + filenames[:fileend]
+#     else:
+#         batch_files = filenames[filestart:fileend]
+#
+#
+#     ## read images
+#     batchNum = len(batch_files)
+#     labels = np.zeros([batchNum, channels, imageSize, imageSize, viewSize, viewSize], dtype=np.float32)
+#
+#     # print 'start reading images ...'
+#     for i in range(batchNum):
+#         labels[i] = read_lf_randcrop(batch_files[i], imageSize=imageSize, viewSize=viewSize,
+#                                      channels=channels)
+#     # print 'finished.'
+#
+#     labels = labels.transpose(0, 2, 3, 4, 5, 1)      # reshape the data to : [batchsize, img_h, img_w, view_s, view_t, channels]
+#
+#     return labels

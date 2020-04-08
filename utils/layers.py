@@ -222,7 +222,7 @@ def spatio_angular_upsampling(x, K=2, verbose=True):
     return out
 
 
-def angular_pixel_shuffle(x, rv_in, rv_out):
+def angular_pixel_shuffle(x, rv_in, rv_out, verbose=True):
     batchsize, in_height, in_width, in_sview, in_tview, channels = x.get_shape().as_list()
     out_channels = int(channels / (rv_out**2))
 
@@ -237,6 +237,10 @@ def angular_pixel_shuffle(x, rv_in, rv_out):
     out = tf.reshape(out, (shape[0], shape[1], shape[2], out_channels*rv_in*rv_in, rv_out*in_sview/rv_in,
                            rv_out*in_tview/rv_in))
     out = tf.transpose(out, (0, 1, 2, 4, 5, 3))
+
+    if verbose:
+        message = '|{0:-^72}|'.format(' Angular Upsampling Layer: ' + str(out.get_shape()) + ' ')
+        logging.info(message)
     return out
 
 # ======================================================================================= #

@@ -24,7 +24,8 @@ class HDDRNet(object):
 
     def build_model(self, x, is_training, reuse, verbose):
         with tf.variable_scope('lfresnet', reuse=reuse):
-            logging.info('+{0:-^72}+'.format(''))
+            if self.verbose:
+                logging.info('+{0:-^72}+'.format(''))
             with tf.variable_scope('conv4d1'):
                 x = conv4d(x, self.channels, 64, kernel_size_1=3, kernel_size_2=5, padding='SAME',
                            trainable=True, verbose=verbose)
@@ -168,7 +169,9 @@ class HDDRNet(object):
             with tf.variable_scope('conv4out'):
                 x = conv4d(x, 64, self.channels, kernel_size_1=3, kernel_size_2=3, padding='SAME',
                            trainable=True, verbose=verbose)
-            logging.info('+{0:-^72}+'.format(''))
+
+            if self.verbose:
+                logging.info('+{0:-^72}+'.format(''))
 
         self.net_variables = tf.get_collection(tf.GraphKeys.TRAINABLE_VARIABLES, scope='lfresnet')
         return x, pre_recons

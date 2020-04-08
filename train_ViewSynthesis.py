@@ -41,16 +41,16 @@ parser.add_argument("--imageSize", type=int, default=96, help="Spatial size of i
 parser.add_argument("--viewSize", type=int, default=9, help="Angular size of input light fields")
 parser.add_argument("--channels", type=int, default=1,
                     help="Channels=1 means only the luma channel; Channels=3 means RGB channels")
-parser.add_argument("--verbose", type=bool, default=True, help="Whether print the network structure")
+parser.add_argument("--verbose", default=False, action="store_true", help="Whether print the network structure")
 parser.add_argument("--num_epoch", type=int, default=50, help="The total number of training epoch")
 parser.add_argument("--start_epoch", type=int, default=0, help="The total number of crops for each light field")
 parser.add_argument("--gamma_S", type=int, default=1, choices=[1, 2, 3, 4], help="Spatial scaling factor")
-parser.add_argument("--gamma_A", type=int, default=4, choices=[0, 1, 2, 3, 4],
+parser.add_argument("--gamma_A", type=int, default=2, choices=[0, 1, 2, 3, 4],
                     help="Angular scaling factor, '0' represents 3x3->7x7")
 parser.add_argument("--num_GRL_HRB", type=int, default=5, help="The number of HRB in GRLNet")
 parser.add_argument("--num_SRe_HRB", type=int, default=3, help="The number of HRB in SReNet")
 parser.add_argument("--resume", type=bool, default=False, help="Need to resume the pretrained model or not")
-parser.add_argument("--select_gpu", type=str, default="0", help="Select the gpu for training or evaluation")
+parser.add_argument("--select_gpu", type=str, default="1", help="Select the gpu for training or evaluation")
 parser.add_argument("--perceptual_loss", type=bool, default=False,
                     help="Need to use perceptual loss or not, if true, need to set the vgg_model item")
 parser.add_argument("--vgg_model", type=str, default="vgg19/weights/latest", help="Pretrained VGG model path")
@@ -152,25 +152,25 @@ def main(args):
     # ===================== Definition of params ====================== #
     logging.info("===> Initialization")
     if args.gamma_A == 0:    # 3x3 -> 7x7
-        inputs = tf.placeholder(tf.float32, [args.batchSize, args.imageSize, args.imageSize, 3, 3, args.channels])
-        groundtruth = tf.placeholder(tf.float32, [args.batchSize, args.imageSize, args.imageSize, 7, 7, args.channels])
+        inputs = tf.placeholder(tf.float32, [None, None, None, 3, 3, args.channels])
+        groundtruth = tf.placeholder(tf.float32, [None, None, None, 7, 7, args.channels])
     elif args.gamma_A == 2:  # 5x5 -> 9x9
-        inputs = tf.placeholder(tf.float32, [args.batchSize, args.imageSize, args.imageSize, 5, 5, args.channels])
-        groundtruth = tf.placeholder(tf.float32, [args.batchSize, args.imageSize, args.imageSize, 9, 9, args.channels])
+        inputs = tf.placeholder(tf.float32, [None, None, None, 3, 3, args.channels])
+        groundtruth = tf.placeholder(tf.float32, [None, None, None, 5, 5, args.channels])
     elif args.gamma_A == 3:  # 3x3 -> 9x9
-        inputs = tf.placeholder(tf.float32, [args.batchSize, args.imageSize, args.imageSize, 3, 3, args.channels])
-        groundtruth = tf.placeholder(tf.float32, [args.batchSize, args.imageSize, args.imageSize, 9, 9, args.channels])
+        inputs = tf.placeholder(tf.float32, [None, None, None, 3, 3, args.channels])
+        groundtruth = tf.placeholder(tf.float32, [None, None, None, 9, 9, args.channels])
     elif args.gamma_A == 4:  # 2x2 -> 8x8
-        inputs = tf.placeholder(tf.float32, [args.batchSize, args.imageSize, args.imageSize, 2, 2, args.channels])
-        groundtruth = tf.placeholder(tf.float32, [args.batchSize, args.imageSize, args.imageSize, 8, 8, args.channels])
+        inputs = tf.placeholder(tf.float32, [None, None, None, 2, 2, args.channels])
+        groundtruth = tf.placeholder(tf.float32, [None, None, None, 8, 8, args.channels])
     else:
         inputs = None
         groundtruth = None
-    # groundtruth = tf.placeholder(tf.float32, [args.batchSize, args.imageSize, args.imageSize, args.viewSize,
-    #                                           args.viewSize, args.channels])
+
     is_training = tf.placeholder(tf.bool, [])
     learning_rate = tf.placeholder(tf.float32, [])
-    
+
+    logging.info("===> Create Network")
     HDDRNet = import_model(args.gamma_S, args.gamma_A)
     model = HDDRNet(inputs, groundtruth, is_training, args)
 

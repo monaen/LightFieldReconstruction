@@ -41,7 +41,7 @@ parser.add_argument("--imageSize", type=int, default=96, help="Spatial size of i
 parser.add_argument("--viewSize", type=int, default=5, help="Angular size of input light fields")
 parser.add_argument("--channels", type=int, default=1,
                     help="Channels=1 means only the luma channel; Channels=3 means RGB channels")
-parser.add_argument("--verbose", type=bool, default=True, help="Whether print the network structure")
+parser.add_argument("--verbose", default=False, action="store_true", help="Whether print the network structure")
 parser.add_argument("--num_epoch", type=int, default=50, help="The total number of training epoch")
 parser.add_argument("--start_epoch", type=int, default=0, help="The total number of crops for each light field")
 parser.add_argument("--gamma_S", type=int, default=4, choices=[1, 2, 3, 4], help="Spatial scaling factor")

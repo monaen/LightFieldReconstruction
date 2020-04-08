@@ -3,10 +3,13 @@ from utils.convolve4d import *
 from vgg19.vgg19 import VGG19
 from tool.log_config import *
 
+
 class HDDRNet(object):
-    ''' The HDDRNet framework
     '''
-    
+    The HDDRNet framework
+
+    '''
+
     def __init__(self, inputs, targets, is_training, args):
         super(HDDRNet, self).__init__()
         self.channels = args.channels
@@ -18,10 +21,11 @@ class HDDRNet(object):
         self.vgg = VGG19(None, None, None)
         self.PreRecons, self.Recons = self.build_model(inputs, is_training, reuse=False, verbose=self.verbose)
         self.loss = self.compute_loss(targets, self.PreRecons, self.Recons, self.use_perceptual_loss)
-    
+
     def build_model(self, x, is_training, reuse, verbose):
         with tf.variable_scope('lfresnet', reuse=reuse):
-            logging.info('+{0:-^72}+'.format(''))
+            if self.verbose:
+                logging.info('+{0:-^72}+'.format(''))
             with tf.variable_scope('conv4d1'):
                 x = conv4d(x, self.channels, 64, kernel_size_1=3, kernel_size_2=5, padding='SAME',
                            trainable=True, verbose=verbose)
@@ -93,12 +97,14 @@ class HDDRNet(object):
                     x = AGBN(x, is_training, verbose=verbose)
             residual_out5 = tf.add_n([x, residual_out4, residual_out3, residual_out2, residual_out1, source])
             x = residual_out5
-            # ============================= Upsampling ============================= #
+
             with tf.variable_scope('conv4d2'):
                 x = conv4d(x, 64, 64, kernel_size_1=3, kernel_size_2=5, padding='SAME',
                            trainable=True, verbose=verbose)
                 x = AGBN(x, is_training, verbose=verbose)
                 x = tf.add_n([x, source])
+
+            # ============================= Upsampling ============================= #
             with tf.variable_scope('conv4d3'):
                 x = conv4d(x, 64, 256, kernel_size_1=3, kernel_size_2=5, padding='SAME',
                            trainable=True, verbose=verbose)
@@ -128,7 +134,7 @@ class HDDRNet(object):
                     x = AGBN(x, is_training, verbose=verbose)
             residual_out21 = tf.add_n([x, source2])
             x = residual_out21
-            # ======= residual block 2_1 ====== #
+            # ======= residual block 2_2 ====== #
             with tf.variable_scope('residual_block2_2'):
                 with tf.variable_scope('angular_block1a'):
                     x = conv4d(x, 64, 64, kernel_size_1=3, kernel_size_2=5, padding='SAME',
@@ -141,7 +147,7 @@ class HDDRNet(object):
                     x = AGBN(x, is_training, verbose=verbose)
             residual_out22 = tf.add_n([x, residual_out21, source2])
             x = residual_out22
-            # ======= residual block 2_1 ====== #
+            # ======= residual block 2_3 ====== #
             with tf.variable_scope('residual_block2_3'):
                 with tf.variable_scope('angular_block1a'):
                     x = conv4d(x, 64, 64, kernel_size_1=3, kernel_size_2=5, padding='SAME',
@@ -163,7 +169,9 @@ class HDDRNet(object):
             with tf.variable_scope('conv4out'):
                 x = conv4d(x, 64, self.channels, kernel_size_1=3, kernel_size_2=3, padding='SAME',
                            trainable=True, verbose=verbose)
-            logging.info('+{0:-^72}+'.format(''))
+
+            if self.verbose:
+                logging.info('+{0:-^72}+'.format(''))
 
         self.net_variables = tf.get_collection(tf.GraphKeys.TRAINABLE_VARIABLES, scope='lfresnet')
         return x, pre_recons

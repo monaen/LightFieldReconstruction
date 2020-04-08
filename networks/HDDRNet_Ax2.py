@@ -24,7 +24,8 @@ class HDDRNet(object):
 
     def build_model(self, x, is_training, reuse, verbose):
         with tf.variable_scope('lfresnet', reuse=reuse):
-            logging.info('+{0:-^72}+'.format(''))
+            if self.verbose:
+                logging.info('+{0:-^72}+'.format(''))
             with tf.variable_scope('conv4d1'):
                 x = conv4d(x, self.channels, 64, kernel_size_1=3, kernel_size_2=5, padding='SAME',
                            trainable=True, verbose=verbose)
@@ -60,44 +61,53 @@ class HDDRNet(object):
             # ======= residual block 3 ====== #
             with tf.variable_scope('residual_block1_3'):
                 with tf.variable_scope('angular_block1a'):
-                    x = conv4d(x, 64, 64, kernel_size_1=3, kernel_size_2=5, padding='SAME', trainable=True)
-                    x = AGBN(x, is_training)
-                    x = leakyrelu(x)
+                    x = conv4d(x, 64, 64, kernel_size_1=3, kernel_size_2=5, padding='SAME',
+                               trainable=True, verbose=verbose)
+                    x = AGBN(x, is_training, verbose=verbose)
+                    x = leakyrelu(x, verbose=verbose)
                 with tf.variable_scope('angular_block1b'):
-                    x = conv4d(x, 64, 64, kernel_size_1=3, kernel_size_2=5, padding='SAME', trainable=True)
-                    x = AGBN(x, is_training)
+                    x = conv4d(x, 64, 64, kernel_size_1=3, kernel_size_2=5, padding='SAME',
+                               trainable=True, verbose=verbose)
+                    x = AGBN(x, is_training, verbose=verbose)
                 residual_out3 = tf.add_n([x, residual_out2, residual_out1, source])
                 x = residual_out3
             with tf.variable_scope('conv4d2'):
-                x = conv4d(x, 64, 64, kernel_size_1=3, kernel_size_2=5, padding='SAME', trainable=True)
-                x = AGBN(x, is_training)
+                x = conv4d(x, 64, 64, kernel_size_1=3, kernel_size_2=5, padding='SAME',
+                           trainable=True, verbose=verbose)
+                x = AGBN(x, is_training, verbose=verbose)
                 x = tf.add_n([x, source])
             # ============================= Upsampling ============================= #
             with tf.variable_scope('conv4d3'):
-                x = conv4d(x, 64, 3*9*9, kernel_size_1=3, kernel_size_2=5, padding='SAME', trainable=True)
-                x = angular_pixel_shuffle(x, rv_in=3, rv_out=9)
-                x = leakyrelu(x)
+                x = conv4d(x, 64, 6*5*5, kernel_size_1=3, kernel_size_2=5, padding='SAME',
+                           trainable=True, verbose=verbose)
+                x = angular_pixel_shuffle(x, rv_in=3, rv_out=5, verbose=verbose)
+                x = leakyrelu(x, verbose=verbose)
 
             # ====================== Spatial Details Recovery ====================== #
             with tf.variable_scope('conv4d4'):
-                x = conv4d(x, 27, 64, kernel_size_1=3, kernel_size_2=3, padding='SAME', trainable=True)
+                x = conv4d(x, 54, 64, kernel_size_1=3, kernel_size_2=3, padding='SAME',
+                           trainable=True, verbose=verbose)
                 source2 = x
 
             # ======= residual block 4 ====== #
             with tf.variable_scope('residual_block2_1'):
                 with tf.variable_scope('angular_block1a'):
-                    x = conv4d(x, 64, 64, kernel_size_1=3, kernel_size_2=3, padding='SAME', trainable=True)
-                    x = AGBN(x, is_training)
-                    x = leakyrelu(x)
+                    x = conv4d(x, 64, 64, kernel_size_1=3, kernel_size_2=3, padding='SAME',
+                               trainable=True, verbose=verbose)
+                    x = AGBN(x, is_training, verbose=verbose)
+                    x = leakyrelu(x, verbose=verbose)
                 with tf.variable_scope('angular_block1b'):
-                    x = conv4d(x, 64, 64, kernel_size_1=3, kernel_size_2=3, padding='SAME', trainable=True)
-                    x = AGBN(x, is_training)
+                    x = conv4d(x, 64, 64, kernel_size_1=3, kernel_size_2=3, padding='SAME',
+                               trainable=True, verbose=verbose)
+                    x = AGBN(x, is_training, verbose=verbose)
                 residual_out21 = tf.add_n([x, source2])
             with tf.variable_scope('conv4out'):
                 x = conv4d(residual_out21, 64, self.channels, kernel_size_1=3, kernel_size_2=3, padding='SAME',
-                           trainable=True)
+                           trainable=True, verbose=verbose)
                 pre_recons = x
-            logging.info('+{0:-^72}+'.format(''))
+
+            if self.verbose:
+                logging.info('+{0:-^72}+'.format(''))
 
         self.net_variables = tf.get_collection(tf.GraphKeys.TRAINABLE_VARIABLES, scope='lfresnet')
         return x, pre_recons
