@@ -26,32 +26,33 @@ git clone https://github.com/monaen/LightFieldReconstruction.git --branch master
 ```
 
 ## Training
-#### Training models for spatial super-resolution tasks (Sx2, Sx3, and Sx4)
-* Training the model for spatial super-resolution (e.g. Sx4)
+#### Training models for spatial or angular or both super-resolution tasks
+* Training the model for spatial super-resolution (e.g. Sx4). You need to specify the `gamma_S` for different spatial SR tasks.
 ```commandline
 python train_SpatialSR.py --gamma_S 4 --verbose --perceptual_loss
 ```
-* Training the model for angular super-resolution (e.g. Ax4)
+* Training the model for angular super-resolution (e.g. Ax4). You need to specify the `gamma_A` for different angular SR tasks.
 ```commandline
 python train_ViewSysthesis.py --gamma_A 4 --verbose
 ```
-* Training the model for spatio-angular super-resolution (e.g. Sx2Ax2)
+* Training the model for spatio-angular super-resolution (e.g. Sx2Ax2). You need to specify both the `gamma_S` and `gamma_A` for different spatio-angular SR tasks.
 ```commandline
 python train_ViewSysthesis.py --gamma_S 2 --gamma_A 2 --verbose --perceptual_loss
 ```
 
+### Training arguments
 ```commandline
-# usage: train_SpatialSR.py [-h] [--datadir DATADIR] [--lr_start LR_START]
-#                           [--lr_beta1 LR_BETA1] [--batchSize BATCHSIZE]
-#                           [--imageSize IMAGESIZE] [--viewSize VIEWSIZE]
-#                           [--channels CHANNELS] [--verbose VERBOSE]
-#                           [--num_epoch NUM_EPOCH] [--start_epoch START_EPOCH]
-#                           [--gamma_S {1,2,3,4}] [--gamma_A {0,1,2,3,4}]
-#                           [--num_GRL_HRB NUM_GRL_HRB]
-#                           [--num_SRe_HRB NUM_SRE_HRB] [--resume RESUME]
-#                           [--select_gpu SELECT_GPU]
-#                           [--perceptual_loss PERCEPTUAL_LOSS]
-#                           [--vgg_model VGG_MODEL] [--save_folder SAVE_FOLDER]
+usage: train_SpatialSR.py [-h] [--datadir DATADIR] [--lr_start LR_START]
+                          [--lr_beta1 LR_BETA1] [--batchSize BATCHSIZE]
+                          [--imageSize IMAGESIZE] [--viewSize VIEWSIZE]
+                          [--channels CHANNELS] [--verbose VERBOSE]
+                          [--num_epoch NUM_EPOCH] [--start_epoch START_EPOCH]
+                          [--gamma_S {1,2,3,4}] [--gamma_A {0,1,2,3,4}]
+                          [--num_GRL_HRB NUM_GRL_HRB]
+                          [--num_SRe_HRB NUM_SRE_HRB] [--resume RESUME]
+                          [--select_gpu SELECT_GPU]
+                          [--perceptual_loss PERCEPTUAL_LOSS]
+                          [--vgg_model VGG_MODEL] [--save_folder SAVE_FOLDER]
 ```
 
 ## Evaluation
