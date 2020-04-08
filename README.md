@@ -119,7 +119,7 @@ Paper
 - [ ] Training data.
 - [ ] Testing data.
 - [ ] Evaluation code.
-- [ ] Analysis preparation.
+- [ ] Results and analysis.
 * AAAI
 - [ ] Spatial super-resolution 2x framework and the pretrained model.
 - [ ] Spatial super-resolution 3x framework and the pretrained model.
