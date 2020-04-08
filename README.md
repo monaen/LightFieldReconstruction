@@ -100,8 +100,6 @@ Paper
   year         = {2020}
 }
 ```
-## Acknowledgement
-Our code is released under [MIT License](https://github.com/monaen/LightFieldReconstruction/blob/master/LICENSE). We would like to appreciate the GPU support from **Lee Ultrasound Imaging Group** of [Prof.Wei-Ning Lee](https://www.eee.hku.hk/~wnlee/people.html)
 
 ## Frequently Asked Questions
 
@@ -128,3 +126,6 @@ Our code is released under [MIT License](https://github.com/monaen/LightFieldRec
 - [ ] Angular super-resolution 3x (3x3->9x9) framework and the pretrained model.
 - [ ] Angular super-resolution 4x (2x2->8x8) framework and the pretrained model.
 - [ ] Other materials.
+
+## Acknowledgement
+Our code is released under [MIT License](https://github.com/monaen/LightFieldReconstruction/blob/master/LICENSE). We would like to appreciate the GPU support from **Lee Ultrasound Imaging Group** of [Prof.Wei-Ning Lee](https://www.eee.hku.hk/~wnlee/people.html)
