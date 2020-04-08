@@ -42,24 +42,24 @@ python train_ViewSysthesis.py --gamma_S 2 --gamma_A 2 --verbose --perceptual_los
 
 ### Training arguments
 ```commandline
-usage: train_SpatialSR.py [-h] [--datadir DATADIR] [--lr_start LR_START] [--lr_beta1 LR_BETA1] [--batchSize BATCHSIZE]
-                          [--imageSize IMAGESIZE] [--viewSize VIEWSIZE] [--channels CHANNELS] [--verbose VERBOSE]
-                          [--num_epoch NUM_EPOCH] [--start_epoch START_EPOCH] [--gamma_S {1,2,3,4}]
-                          [--gamma_A {0,1,2,3,4}] [--num_GRL_HRB NUM_GRL_HRB] [--num_SRe_HRB NUM_SRE_HRB]
-                          [--resume RESUME] [--select_gpu SELECT_GPU] [--perceptual_loss PERCEPTUAL_LOSS]
-                          [--vgg_model VGG_MODEL] [--save_folder SAVE_FOLDER]
+usage:train_SpatialSR.py [-h] [--datadir DATADIR] [--lr_start LR_START] [--lr_beta1 LR_BETA1] [--batchSize BATCHSIZE]
+                         [--imageSize IMAGESIZE] [--viewSize VIEWSIZE] [--channels CHANNELS] [--verbose VERBOSE]
+                         [--num_epoch NUM_EPOCH] [--start_epoch START_EPOCH] [--gamma_S {1,2,3,4}]
+                         [--gamma_A {0,1,2,3,4}] [--num_GRL_HRB NUM_GRL_HRB] [--num_SRe_HRB NUM_SRE_HRB]
+                         [--resume RESUME] [--select_gpu SELECT_GPU] [--perceptual_loss PERCEPTUAL_LOSS]
+                         [--vgg_model VGG_MODEL] [--save_folder SAVE_FOLDER]
 
 optional arguments:
   -h, --help                Show this help message and exit
-  --datadir DATADIR         The training and testing data path
-  --lr_start LR_START       The start learning rate
-  --lr_beta1 LR_BETA1       The exponential decay rate for the 1st moment estimates
-  --batchSize BATCHSIZE     The batchsize of input data
-  --imageSize IMAGESIZE     Spatial size of input light fields
-  --viewSize VIEWSIZE       Angular size of input light fields
-  --channels CHANNELS       Channels=1 means only the luma channel; Channels=3 means RGB channels
+  --datadir                 The training and testing data path
+  --lr_start                The start learning rate
+  --lr_beta1                The exponential decay rate for the 1st moment estimates
+  --batchSize               The batchsize of input data
+  --imageSize               Spatial size of input light fields
+  --viewSize                Angular size of input light fields
+  --channels                Channels=1 means only the luma channel; Channels=3 means RGB channels
   --verbose                 Whether print the network structure
-  --num_epoch NUM_EPOCH     The total number of training epoch
+  --num_epoch               The total number of training epoch
   --start_epoch             The total number of crops for each light field
   --gamma_S {1,2,3,4}       Spatial scaling factor
   --gamma_A {0,1,2,3,4}     Angular scaling factor, '0' represents 3x3->7x7
