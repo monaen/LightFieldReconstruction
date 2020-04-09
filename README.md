@@ -54,20 +54,20 @@ optional arguments:
   --datadir                 The training and testing data path
   --lr_start                The start learning rate
   --lr_beta1                The exponential decay rate for the 1st moment estimates
-  --batchSize               The batchsize of input data
-  --imageSize               Spatial size of input light fields
-  --viewSize                Angular size of input light fields
-  --channels                Channels=1 means only the luma channel; Channels=3 means RGB channels
-  --verbose                 Whether print the network structure
+  --batchSize               The batchsize of the input data
+  --imageSize               Spatial size of the input light fields
+  --viewSize                Angular size of the input light fields
+  --channels                Channels=1 means only the luma channel; Channels=3 means RGB channels (not supported)
+  --verbose                 Whether print the network structure or not
   --num_epoch               The total number of training epoch
-  --start_epoch             The total number of crops for each light field
-  --gamma_S {1,2,3,4}       Spatial scaling factor
-  --gamma_A {0,1,2,3,4}     Angular scaling factor, '0' represents 3x3->7x7
+  --start_epoch             The start epoch counting number
+  --gamma_S {1,2,3,4}       Spatial downscaling factor
+  --gamma_A {0,1,2,3,4}     Angular downscaling factor, '0' represents 3x3->7x7
   --num_GRL_HRB             The number of HRB in GRLNet (only for AAAI model)
   --num_SRe_HRB             The number of HRB in SReNet (only for AAAI model)
   --resume                  Need to resume the pretrained model or not
   --select_gpu              Select the gpu for training or evaluation
-  --perceptual_loss         Need to use perceptual loss or not, if true, need to set the vgg_model item
+  --perceptual_loss         Need to use perceptual loss or not, if true, one also have to set the vgg_model item
   --vgg_model               Pretrained VGG model path
   --save_folder             Model save path
 ```
