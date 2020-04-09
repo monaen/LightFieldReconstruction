@@ -21,7 +21,7 @@ This Project is a Tensorflow implementation of
 git clone https://github.com/monaen/LightFieldReconstruction.git --branch master --single-branch
 ```
 
-* Preparing the Dataset
+* Preparing the Dataset (preparing)
 ```commandline
 ```
 
@@ -72,7 +72,7 @@ optional arguments:
   --save_folder             Model save path
 ```
 
-## Evaluation
+## Evaluation (preparing)
 ```commandline
 ```
 
