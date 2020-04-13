@@ -10,17 +10,23 @@ class HDDRNet(object):
 
     '''
 
-    def __init__(self, inputs, targets, is_training, args):
+    def __init__(self, inputs, targets, is_training, args, state="TRAIN"):
         super(HDDRNet, self).__init__()
         self.channels = args.channels
         self.gamma_S = args.gamma_S
         self.gamma_A = args.gamma_A
-        self.use_perceptual_loss = args.perceptual_loss
         self.verbose = args.verbose
         self.net_variables = None
         self.vgg = VGG19(None, None, None)
         self.PreRecons, self.Recons = self.build_model(inputs, is_training, reuse=False, verbose=self.verbose)
-        self.loss = self.compute_loss(targets, self.PreRecons, self.Recons, self.use_perceptual_loss)
+        if state == "TRAIN":
+            self.use_perceptual_loss = args.perceptual_loss
+            self.loss = self.compute_loss(targets, self.PreRecons, self.Recons, self.use_perceptual_loss)
+        elif state == "TEST":
+            self.use_perceptual_loss = None
+            self.loss = 0.0
+        else:
+            assert False, "State not supportable (only support 'TRAIN' and 'TEST')."
 
     def build_model(self, x, is_training, reuse, verbose):
         with tf.variable_scope('lfresnet', reuse=reuse):
@@ -174,7 +180,7 @@ class HDDRNet(object):
                 logging.info('+{0:-^72}+'.format(''))
 
         self.net_variables = tf.get_collection(tf.GraphKeys.TRAINABLE_VARIABLES, scope='lfresnet')
-        return x, pre_recons
+        return pre_recons, x
 
     def views_flatten(self, x):
         batch, w, h, s, t, c = x.get_shape().as_list()

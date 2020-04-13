@@ -159,7 +159,7 @@ def main(args):
     learning_rate = tf.placeholder(tf.float32, [])
     
     HDDRNet = import_model(args.gamma_S, args.gamma_A)
-    model = HDDRNet(inputs, groundtruth, is_training, args)
+    model = HDDRNet(inputs, groundtruth, is_training, args, state="TRAIN")
 
     sess = tf.InteractiveSession(config=tf.ConfigProto(allow_soft_placement=True))
     opt = tf.train.AdamOptimizer(beta1=args.lr_beta1, learning_rate=learning_rate)
