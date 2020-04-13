@@ -81,6 +81,7 @@ cd ..
 
 python evaluation_SpatialSR.py --verbose --datapath data/evaluation/buddha.mat
 ```
+* Angular SR evaluation (Ax4, Ax3, Ax2, A3x3_7x7)  [Preparing]
 
 ## Using the pretrained model
 To download the pretrained mdoels, please change the directory into the folder `pretrained_models` and run the corresponding bash files. For example, to download the HDDRNet_Sx4 pretrained model, 
