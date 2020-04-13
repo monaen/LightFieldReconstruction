@@ -28,4 +28,6 @@
 
 echo "Downloading the sample light field data of evaluation ........"
 
-wget --no-check-certificate
+wget --no-check-certificate https://github.com/monaen/LightFieldReconstruction/raw/storage/data/evaluation/buddha.mat
+
+mv buddha.mat evaluation/buddha.mat
