@@ -24,8 +24,6 @@ import numpy as np
 import argparse
 import sys
 import cv2
-from scipy.interpolate import interpn
-import matplotlib.pyplot as plt
 import scipy.io as sio
 from tqdm import tqdm
 from utils.utils import ssim_exact, downsampling, LF_split_patches, shaveLF, shave_batch_LFs, \
@@ -39,7 +37,7 @@ tf.logging.set_verbosity(tf.logging.ERROR)
 
 # ============================== Experimental settings ============================== #
 parser = argparse.ArgumentParser(description="HDDRNet Tensorflow Implementation")
-parser.add_argument("--datadir", type=str, default="./data", help="The training and testing data path")
+parser.add_argument("--datapath", type=str, default="./data/evaluation/buddha.mat", help="The evaluation data path")
 parser.add_argument("--batchSize", type=int, default=1, help="The batchsize of the input data")
 parser.add_argument("--imageSize", type=int, default=96, help="Spatial size of the input light fields")
 parser.add_argument("--viewSize", type=int, default=5, help="Angular size of the input light fields")
@@ -279,8 +277,7 @@ def main(args):
 
     # ===================== Read light field data ===================== #
     logging.info("===> Reading the light field data")
-    datapath = "data/evaluation/buddha.mat"
-    LF = sio.loadmat(datapath)["data"]
+    LF = sio.loadmat(args.datapath)["data"]
     LF = LF.transpose(2, 3, 0, 1, 4)
     LF = shaveLF_by_factor(LF, args.gamma_S)
     LF = np.expand_dims(LF, axis=0)
