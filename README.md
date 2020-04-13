@@ -72,8 +72,14 @@ optional arguments:
   --save_folder             Model save path
 ```
 
-## Evaluation (preparing)
+## Evaluation
+* Spatial SR evaluation (Sx4, Sx3, Sx2)
 ```commandline
+cd data
+bash download_evaluation_data.sh
+cd ..
+
+python evaluation_SpatialSR.py --verbose --datapath data/evaluation/buddha.mat
 ```
 
 ## Using the pretrained model
