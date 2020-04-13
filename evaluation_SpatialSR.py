@@ -51,7 +51,7 @@ parser.add_argument("--num_GRL_HRB", type=int, default=5, help="The number of HR
 parser.add_argument("--num_SRe_HRB", type=int, default=3, help="The number of HRB in SReNet (only for AAAI model)")
 parser.add_argument("--pretrained_model", type=str, default="pretrained_models/HDDRNet/Sx4/HDDRNet",
                     help="Path to store the pretrained model.")
-parser.add_argument("--select_gpu", type=str, default="3", help="Select the gpu for training or evaluation")
+parser.add_argument("--select_gpu", type=str, default="0", help="Select the gpu for training or evaluation")
 args = parser.parse_args()
 
 
