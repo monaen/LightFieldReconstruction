@@ -51,11 +51,19 @@ parser.add_argument("--num_GRL_HRB", type=int, default=5, help="The number of HR
 parser.add_argument("--num_SRe_HRB", type=int, default=3, help="The number of HRB in SReNet (only for AAAI model)")
 parser.add_argument("--pretrained_model", type=str, default="pretrained_models/HDDRNet/Sx4/HDDRNet",
                     help="Path to store the pretrained model.")
-parser.add_argument("--select_gpu", type=str, default="0", help="Select the gpu for training or evaluation")
+parser.add_argument("--select_gpu", type=str, default="3", help="Select the gpu for training or evaluation")
 args = parser.parse_args()
 
 
 def import_model(scale_S, scale_A):
+    """
+    Network importation function.
+
+    :param scale_S: spatial upsampling factor
+    :param scale_A: angular upsampling factor
+
+    :return:        network for the given super-resolution task.
+    """
     if scale_A == 1:
         if scale_S == 4:
             from networks.HDDRNet_Sx4 import HDDRNet
@@ -79,6 +87,14 @@ def import_model(scale_S, scale_A):
 
 
 def get_state(spatial_scale, angular_scale):
+    """
+    Get the super-resolution task.
+
+    :param spatial_scale: spatial upsampling factor
+    :param angular_scale: angular upsampling factor
+
+    :return:              super-resolution task
+    """
     statetype = ""
     if spatial_scale != 1:
         statetype += "Sx{:d}".format(spatial_scale)
@@ -177,7 +193,20 @@ def ReconstructSpatialLFPatch(LFpatch, model, inputs, is_training, session, args
 
 
 def SpatialReconstruction(low_LF, model, inputs, is_training, session, args, stride=60, border=(3, 3)):
+    """
+    Reconstruct the spatial high-resolution light field
 
+    :param low_LF:      input low-resolution light field
+    :param model:       the network
+    :param inputs:      tensorflow placeholder for network input
+    :param is_training: tensorflow placeholder to indicate whether need training
+    :param session:     tensorflow session
+    :param args:        arugments
+    :param stride:      stride for reconstruction
+    :param border:      shaved border of the final reconstructed LF
+
+    :return:            reconstructed LF (border shaved)
+    """
     # test stride values
     if stride % args.gamma_S != 0:
         stride = stride - np.mod(stride, args.gamma_S)
@@ -306,7 +335,7 @@ def main(args):
 
 
     logging.info('{0:+^74}'.format(""))
-    logging.info('|{0: ^72}|'.format("Quantitative result for the scene: {}".format(datapath.split('/')[-1])))
+    logging.info('|{0: ^72}|'.format("Quantitative result for the scene: {}".format(args.datapath.split('/')[-1])))
     logging.info('|{0: ^72}|'.format(""))
     logging.info('|{0: ^72}|'.format("Method: HDDRNet |  Mean PSNR: {:.3f}      Mean SSIM: {:.3f}".format(meanPSNR, meanSSIM)))
     logging.info('|{0: ^72}|'.format("Method: BICUBIC |  Mean PSNR: {:.3f}      Mean SSIM: {:.3f}".format(meanbicubicPSNR, meanbicubicSSIM)))
