@@ -75,7 +75,10 @@ optional arguments:
 ## Evaluation
 * Spatial SR evaluation (Sx4, Sx3, Sx2)
 ```commandline
-python evaluation_SpatialSR.py --datapath $PATH_TO_THE_EVALUATION_LF_DATA --gamma_S $Upscaling_Factor --pretrained_model $PATH_TO_THE_PRETRAINED_MODEL --select_gpu 0 --verbose
+python evaluation_SpatialSR.py --datapath $PATH_TO_THE_EVALUATION_LF_DATA \
+                               --gamma_S $Upscaling_Factor \
+                               --pretrained_model $PATH_TO_THE_PRETRAINED_MODEL \
+                               --select_gpu 0 --verbose
 ```
 Here, we provide an example to evaluate the performance on Sx4 task as guidance. 
 ```commandline
@@ -86,7 +89,10 @@ cd ../pretrained_models
 bash download_pretrained_models_HDDRNet_Sx4.sh
 cd ..
 
-python evaluation_SpatialSR.py --datapath data/evaluation/buddha.mat --gamma_S 4 --pretrained_model pretrained_models/HDDRNet/Sx4/HDDRNet --select_gpu 0 --verbose
+python evaluation_SpatialSR.py --datapath data/evaluation/buddha.mat \
+                               --gamma_S 4 \
+                               --pretrained_model pretrained_models/HDDRNet/Sx4/HDDRNet \
+                               --select_gpu 0 --verbose
 ```
 * Angular SR evaluation (Ax4, Ax3, Ax2, A3x3_7x7)  [Preparing]
 
