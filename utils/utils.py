@@ -164,9 +164,11 @@ def psnr(img1, img2):
 
     :return:     PSNR value
     """
+    img1 = img1.astype(np.float64)
+    img2 = img2.astype(np.float64)
     mse = np.mean((img1 - img2) ** 2)
     if mse == 0:
-        return 100
+        return float("inf")
     PIXEL_MAX = 255.0
     return 20 * math.log10(PIXEL_MAX / math.sqrt(mse))
 
