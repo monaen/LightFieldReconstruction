@@ -26,9 +26,8 @@ import sys
 import cv2
 import scipy.io as sio
 from tqdm import tqdm
-from utils.utils import ssim_exact, downsampling, LF_split_patches, shaveLF, shave_batch_LFs, \
+from utils.utils import psnr, ssim_exact, downsampling, LF_split_patches, shaveLF, shave_batch_LFs, \
     shaveLF_by_factor, shaved_LF_reconstruct
-from skimage.measure import compare_psnr as psnr
 
 # logging configuration
 from tool.log_config import *
