@@ -1,7 +1,7 @@
 # High-Dimensional Dense Residual Convolutional Neural Network for Light Field Reconstruction [![MIT Licence](https://badges.frapsoft.com/os/mit/mit.svg?v=103)](https://opensource.org/licenses/mit-license.php)
 
 **Note: The code for this project will be uploaded gradually.**
-**Because of the COVID-19 and some other factors, the rest of the project may updated after July, 2020 (sorry about that)**
+**Because of the COVID-19 and some other factors, the rest of the project may updated after August, 2020 (sorry about that)**
 
 This Project is a Tensorflow implementation of 
 * "High-Dimensional Dense Residual Convolutional Neural Network for Light Field Reconstruction" *IEEE Transactions on Pattern Analysis and Machine Intelligence*, **Nan Meng**, Hayden K-H. So, Xing Sun, Edmund Y. Lam, 2019. [[Paper]](https://arxiv.org/pdf/1910.01426.pdf)
