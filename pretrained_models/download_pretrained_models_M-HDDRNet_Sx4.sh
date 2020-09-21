@@ -9,14 +9,18 @@
 # |              title={High-dimensional dense residual convolutional neural network for light field reconstruction},  | #
 # |              author={Meng, Nan and So, Hayden Kwok-Hay and Sun, Xing and Lam, Edmund},                             | #
 # |              journal={IEEE Transactions on Pattern Analysis and Machine Intelligence},                             | #
-# |              year={2019},                                                                                          | #
-# |              publisher={IEEE}                                                                                      | #
+# |              year={2019}                                                                                           | #
 # |             }                                                                                                      | #
-# |                                                                                                                    | #
-# | Paper:                                                                                                             | #
-# |     High-Dimensional Dense Residual Convolutional Neural Network for Light Field Reconstruction                    | #
-# |     Nan Meng, Hayden Kwok-Hay So, Xing Sun, and Edmund Y. Lam                                                      | #
-# |     IEEE Transactions on Pattern Analysis and Machine Intelligence, 2019                                           | #
+# |     @article{meng2020high,                                                                                         | #
+# |              title={High-order residual network for light field super-resolution},                                 | #
+# |              author={Meng, Nan and Wu, xiaofei and Liu, Jianzhuang and Lam, Edmund},                               | #
+# |              journal={Association for the Advancement of Artificial Intelligence},                                 | #
+# |              volume={34},                                                                                          | #
+# |              number={7},                                                                                           | #
+# |              pages={11757-11764},                                                                                  | #
+# |              month={February},                                                                                     | #
+# |              year={2020},                                                                                          | #
+# |             }                                                                                                      | #
 # |                                                                                                                    | #
 # | Contact:                                                                                                           | #
 # |     author: Nan Meng                                                                                               | #

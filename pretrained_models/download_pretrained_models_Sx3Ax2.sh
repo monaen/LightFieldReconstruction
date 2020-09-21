@@ -27,25 +27,25 @@
 # |     email:  u3003637@connect.hku.hk  |   nanmeng.uestc@hotmail.com                                                 | #
 # ====================================================================================================================== #
 
-# This script downloads the pretrained model of HDDRNet for Sx3 task and unzips it.
+# This script downloads the pretrained model of HDDRNet for Sx2 task and unzips it.
 # DIR = "$( cd "$(dirname "$0")" ; pwd -P )"
 
-echo "Downloading the pretrained model of HDDRNet for Sx3 task ........"
+echo "Downloading the pretrained model of HDDRNet for Sx2 task ........"
 
-wget --no-check-certificate https://github.com/monaen/LightFieldReconstruction/raw/storage/pretrained_models/HDDRNet/Sx3/HDDRNet_Sx3.part01.rar
-wget --no-check-certificate https://github.com/monaen/LightFieldReconstruction/raw/storage/pretrained_models/HDDRNet/Sx3/HDDRNet_Sx3.part02.rar
-wget --no-check-certificate https://github.com/monaen/LightFieldReconstruction/raw/storage/pretrained_models/HDDRNet/Sx3/HDDRNet_Sx3.part03.rar
-wget --no-check-certificate https://github.com/monaen/LightFieldReconstruction/raw/storage/pretrained_models/HDDRNet/Sx3/HDDRNet_Sx3.part04.rar
-wget --no-check-certificate https://github.com/monaen/LightFieldReconstruction/raw/storage/pretrained_models/HDDRNet/Sx3/HDDRNet_Sx3.part05.rar
-wget --no-check-certificate https://github.com/monaen/LightFieldReconstruction/raw/storage/pretrained_models/HDDRNet/Sx3/HDDRNet_Sx3.part06.rar
-wget --no-check-certificate https://github.com/monaen/LightFieldReconstruction/raw/storage/pretrained_models/HDDRNet/Sx3/HDDRNet_Sx3.part07.rar
-wget --no-check-certificate https://github.com/monaen/LightFieldReconstruction/raw/storage/pretrained_models/HDDRNet/Sx3/HDDRNet_Sx3.part08.rar
-wget --no-check-certificate https://github.com/monaen/LightFieldReconstruction/raw/storage/pretrained_models/HDDRNet/Sx3/HDDRNet_Sx3.part09.rar
-wget --no-check-certificate https://github.com/monaen/LightFieldReconstruction/raw/storage/pretrained_models/HDDRNet/Sx3/HDDRNet_Sx3.part10.rar
+wget --no-check-certificate https://github.com/monaen/LightFieldReconstruction/raw/storage/pretrained_models/Others/Sx3Ax2/Sx3Ax2.part01.rar
+wget --no-check-certificate https://github.com/monaen/LightFieldReconstruction/raw/storage/pretrained_models/Others/Sx3Ax2/Sx3Ax2.part02.rar
+wget --no-check-certificate https://github.com/monaen/LightFieldReconstruction/raw/storage/pretrained_models/Others/Sx3Ax2/Sx3Ax2.part03.rar
+wget --no-check-certificate https://github.com/monaen/LightFieldReconstruction/raw/storage/pretrained_models/Others/Sx3Ax2/Sx3Ax2.part04.rar
+wget --no-check-certificate https://github.com/monaen/LightFieldReconstruction/raw/storage/pretrained_models/Others/Sx3Ax2/Sx3Ax2.part05.rar
+wget --no-check-certificate https://github.com/monaen/LightFieldReconstruction/raw/storage/pretrained_models/Others/Sx3Ax2/Sx3Ax2.part06.rar
+wget --no-check-certificate https://github.com/monaen/LightFieldReconstruction/raw/storage/pretrained_models/Others/Sx3Ax2/Sx3Ax2.part07.rar
+wget --no-check-certificate https://github.com/monaen/LightFieldReconstruction/raw/storage/pretrained_models/Others/Sx3Ax2/Sx3Ax2.part08.rar
+wget --no-check-certificate https://github.com/monaen/LightFieldReconstruction/raw/storage/pretrained_models/Others/Sx3Ax2/Sx3Ax2.part09.rar
+wget --no-check-certificate https://github.com/monaen/LightFieldReconstruction/raw/storage/pretrained_models/Others/Sx3Ax2/Sx3Ax2.part10.rar
 
 echo "Unzipping ........"
 
-unrar x HDDRNet_Sx3.part01.rar && rm -f HDDRNet_Sx3.part*.rar
+unrar x HDDRNet_Sx2.part01.rar && rm -f HDDRNet_Sx2.part*.rar
 
 echo "Done."
 
