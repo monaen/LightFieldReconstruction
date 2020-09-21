@@ -27,11 +27,15 @@
 # |     email:  u3003637@connect.hku.hk   |   nanmeng.uestc@hotmail.com                                                | #
 # ====================================================================================================================== #
 
+import tensorflow as tf
+import numpy as np
 import argparse
-import glob
-import random
-from utils.utils import downsampling, batchmeanpsnr, batchmeanssim
-from utils.augmentation import *
+import sys
+import cv2
+import scipy.io as sio
+from tqdm import tqdm
+from utils.utils import psnr, ssim_exact, downsampling, LF_split_patches, shaveLF, shave_batch_LFs, \
+    shaveLF_by_factor, shaved_LF_reconstruct
 
 # logging configuration
 from tool.log_config import *
@@ -40,33 +44,33 @@ tf.logging.set_verbosity(tf.logging.ERROR)
 
 # ============================== Experimental settings ============================== #
 parser = argparse.ArgumentParser(description="HDDRNet Tensorflow Implementation")
-parser.add_argument("--datadir", type=str, default="./data", help="The training and testing data path")
-parser.add_argument("--lr_start", type=float, default=1e-5, help="The start learning rate")
-parser.add_argument("--lr_beta1", type=float, default=0.5,
-                    help="The exponential decay rate for the 1st moment estimates")
+parser.add_argument("--datapath", type=str, default="./data/evaluation/buddha.mat", help="The evaluation data path")
 parser.add_argument("--batchSize", type=int, default=1, help="The batchsize of the input data")
 parser.add_argument("--imageSize", type=int, default=96, help="Spatial size of the input light fields")
-parser.add_argument("--viewSize", type=int, default=9, help="Angular size of the input light fields")
+parser.add_argument("--viewSize", type=int, default=5, help="Angular size of the input light fields")
 parser.add_argument("--channels", type=int, default=1,
                     help="Channels=1 means only the luma channel; Channels=3 means RGB channels (not supported)")
-parser.add_argument("--verbose", default=False, action="store_true", help="Whether print the network structure or not")
-parser.add_argument("--num_epoch", type=int, default=50, help="The total number of training epoch")
-parser.add_argument("--start_epoch", type=int, default=0, help="The start epoch counting number")
-parser.add_argument("--gamma_S", type=int, default=1, choices=[1, 2, 3, 4], help="Spatial downscaling factor")
-parser.add_argument("--gamma_A", type=int, default=2, choices=[0, 1, 2, 3, 4],
+parser.add_argument("--verbose", default=True, action="store_true", help="Whether print the network structure or not")
+parser.add_argument("--gamma_S", type=int, default=4, choices=[1, 2, 3, 4], help="Spatial downscaling factor")
+parser.add_argument("--gamma_A", type=int, default=1, choices=[0, 1, 2, 3, 4],
                     help="Angular downscaling factor, '0' represents 3x3->7x7")
 parser.add_argument("--num_GRL_HRB", type=int, default=5, help="The number of HRB in GRLNet (only for AAAI model)")
 parser.add_argument("--num_SRe_HRB", type=int, default=3, help="The number of HRB in SReNet (only for AAAI model)")
-parser.add_argument("--resume", default=False, action="store_true", help="Need to resume the pretrained model or not")
-parser.add_argument("--select_gpu", type=str, default="0", help="Select the gpu for training or evaluation")
-parser.add_argument("--perceptual_loss", default=False, action="store_true",
-                    help="Need to use perceptual loss or not, if true, one also have to set the vgg_model item")
-parser.add_argument("--vgg_model", type=str, default="vgg19/weights/latest", help="Pretrained VGG model path")
-parser.add_argument("--save_folder", type=str, default="checkpoints", help="model save path")
+parser.add_argument("--pretrained_model", type=str, default="pretrained_models/HDDRNet/Sx4/HDDRNet",
+                    help="Path to store the pretrained model.")
+parser.add_argument("--select_gpu", type=str, default="3", help="Select the gpu for training or evaluation")
 args = parser.parse_args()
 
 
 def import_model(scale_S, scale_A):
+    """
+    Network importation function.
+
+    :param scale_S: spatial upsampling factor
+    :param scale_A: angular upsampling factor
+
+    :return:        network for the given super-resolution task.
+    """
     if scale_A == 1:
         if scale_S == 4:
             from networks.HDDRNet_Sx4 import HDDRNet
@@ -89,13 +93,15 @@ def import_model(scale_S, scale_A):
     return HDDRNet
 
 
-def adjust_learning_rate(learning_rate, epoch, step=20):
-    """Sets the learning rate to the initial LR decayed by 10 every 10 epochs"""
-    lr = learning_rate * (1 ** (epoch // step))
-    return lr
-
-
 def get_state(spatial_scale, angular_scale):
+    """
+    Get the super-resolution task.
+
+    :param spatial_scale: spatial upsampling factor
+    :param angular_scale: angular upsampling factor
+
+    :return:              super-resolution task
+    """
     statetype = ""
     if spatial_scale != 1:
         statetype += "Sx{:d}".format(spatial_scale)
@@ -104,255 +110,245 @@ def get_state(spatial_scale, angular_scale):
     return statetype
 
 
-def save_model(sess, savefolder, epoch):
-    if not os.path.exists(savefolder):
-        os.makedirs(savefolder)
-    savepath = os.path.join(savefolder, "epoch_{:03d}".format(epoch))
-    saver = tf.train.Saver()
-    path = saver.save(sess, savepath)
-    return path
+def ApertureWisePSNR(Groundtruth, Reconstruction):
+    """
+    Calculate the PSNR value for each sub-aperture image of the
+    input reconstructed light field.
+
+    :param Groundtruth:    input groundtruth light field
+    :param Reconstruction: input reconstruced light field
+
+    :return:               aperture-wise PSNR values
+    """
+    h, w, s, t = Groundtruth.shape[:4]
+    PSNRs = np.zeros([s, t])
+    for i in range(s):
+        for j in range(t):
+            gtimg = Groundtruth[:, :, i, j, ...]
+            gtimg = np.squeeze(gtimg)
+            recons = Reconstruction[:, :, i, j, ...]
+            recons = np.squeeze(recons)
+            PSNRs[i, j] = psnr(gtimg, recons)
+    return PSNRs
 
 
-def save_stateinfo(save_folder, info_dict):
-    if not os.path.exists(save_folder):
-        os.makedirs(save_folder)
-    statefile = open(os.path.join(save_folder, "state.txt"), "w")
-    epoch = info_dict["epoch"]
-    BESTPSNR = info_dict["BESTPSNR"]
-    BESTSSIM = info_dict["BESTSSIM"]
-    TestAvgPSNR = info_dict["TestAvgPSNR"]
-    TestAvgSSIM = info_dict["TestAvgSSIM"]
-    TestAvgAngularLoss = info_dict["TestAvgAngularLoss"]
-    TestAvgSpatialLoss = info_dict["TestAvgSpatialLoss"]
-    TestAvgTotalLoss = info_dict["TestAvgTotalLoss"]
-    statefile.write("Epoch: {}\n".format(epoch))
-    statefile.write("BESTPSNR: {}\n".format(BESTPSNR))
-    statefile.write("BESTSSIM: {}\n".format(BESTSSIM))
-    statefile.write("TestAvgPSNR: {}\n".format(TestAvgPSNR))
-    statefile.write("TestAvgSSIM: {}\n".format(TestAvgSSIM))
-    statefile.write("TestAvgAngularLoss: {}\n".format(TestAvgAngularLoss))
-    statefile.write("TestAvgSpatialLoss: {}\n".format(TestAvgSpatialLoss))
-    statefile.write("TestAvgTotalLoss: {}\n".format(TestAvgTotalLoss))
-    statefile.close()
-    
+def ApertureWiseSSIM(Groundtruth, Reconstruction):
+    """
+    Calculate the SSIM value for each sub-aperture image of the
+    input reconstructed light field.
 
-def read_stateinfo(save_folder):
-    if os.path.exists(os.path.join(save_folder, "state.txt")):
-        savedstate = open(os.path.join(save_folder, "state.txt"), "r")
-        items = savedstate.read().splitlines()
-        Epoch = np.int(items[0].split(":")[-1])
-        BESTPSNR = np.float(items[1].split(":")[-1])
-        BESTSSIM = np.float(items[2].split(":")[-1])
-    else:
-        logging.info("State Not Found. Initialize the training parameters")
-        Epoch = 0
-        BESTPSNR = 0.0
-        BESTSSIM = 0.0
-    return Epoch, BESTPSNR, BESTSSIM
+    :param Groundtruth:    input groundtruth light field
+    :param Reconstruction: input reconstruced light field
+
+    :return:               aperture-wise SSIM values
+    """
+
+    h, w, s, t = Groundtruth.shape[:4]
+    SSIMs = np.zeros([s, t])
+    for i in range(s):
+        for j in range(t):
+            gtimg = Groundtruth[:, :, i, j, ...]
+            gtimg = np.squeeze(gtimg).astype(np.float32)/255.
+            recons = Reconstruction[:, :, i, j, ...]
+            recons = np.squeeze(recons).astype(np.float32)/255.
+            SSIMs[i, j] = ssim_exact(gtimg, recons)
+    return SSIMs
+
+
+def get_indices(data, rs=4, patchsize=96, stride=30):
+    """
+    Calculate the indices for the splited LF patches.
+
+    :param data:      input LF data
+    :param rs:        upsampling factor
+    :param patchsize: split size
+    :param stride:    stride for spliting
+
+    :return:          indices for all splited LF patches
+    """
+    b, h, w, s, t, c = data.shape
+    recons_template = np.zeros([b, h*rs, w*rs, s, t, c])
+    _, indices = LF_split_patches(recons_template, patchsize=patchsize, stride=stride)
+    return indices
+
+
+def ReconstructSpatialLFPatch(LFpatch, model, inputs, is_training, session, args, stride=60, border=(3, 3)):
+    """
+    Spatial reconstruct for a LF patch.
+
+    :param LFpatch:     input LF patch
+    :param model:       network
+    :param inputs:      inputs of the network
+    :param is_training: scala tensor to indicate whether need training
+    :param session:     tensorflow session
+    :param args:        arguments
+    :param stride:      stride for reconstruction
+    :param border:      shaved border of the final reconstructed LF patch
+
+    :return:            reconstructed LF patch (border shaved)
+    """
+    recons_indices = get_indices(LFpatch, rs=args.gamma_S, patchsize=args.imageSize, stride=stride)
+    inPatches, _ = LF_split_patches(LFpatch, patchsize=args.imageSize // args.gamma_S, stride=stride // args.gamma_S)
+    reconPatches = []
+    for i in tqdm(range(len(inPatches))):
+        in_patch = inPatches[i]
+        recon_patch = session.run(model.Recons, feed_dict={inputs: in_patch, is_training: False})
+        reconPatches.append(recon_patch)
+
+    reconsPatch_shaved = shaved_LF_reconstruct(reconPatches, recons_indices, border=border)
+    return reconsPatch_shaved
+
+
+def SpatialReconstruction(low_LF, model, inputs, is_training, session, args, stride=60, border=(3, 3)):
+    """
+    Reconstruct the spatial high-resolution light field
+
+    :param low_LF:      input low-resolution light field
+    :param model:       the network
+    :param inputs:      tensorflow placeholder for network input
+    :param is_training: tensorflow placeholder to indicate whether need training
+    :param session:     tensorflow session
+    :param args:        arugments
+    :param stride:      stride for reconstruction
+    :param border:      shaved border of the final reconstructed LF
+
+    :return:            reconstructed LF (border shaved)
+    """
+    # test stride values
+    if stride % args.gamma_S != 0:
+        stride = stride - np.mod(stride, args.gamma_S)
+
+    # split the LF into 4D patches
+    inLFpatch00 = low_LF[:, :, :, :5, :5, :]
+    inLFpatch01 = low_LF[:, :, :, :5, -5:, :]
+    inLFpatch10 = low_LF[:, :, :, -5:, :5, :]
+    inLFpatch11 = low_LF[:, :, :, -5:, -5:, :]
+
+    b, h, w, s, t, c = low_LF.shape
+    ReconstructLF = np.zeros([b, h*args.gamma_S - border[0]*2, w*args.gamma_S - border[1]*2, s, t, c],
+                             dtype=np.float32)
+
+    # reconstruct each patch
+    reconsLFPatch00 = ReconstructSpatialLFPatch(inLFpatch00, model, inputs, is_training,
+                                                session, args, stride=stride, border=border)
+    reconsLFPatch01 = ReconstructSpatialLFPatch(inLFpatch01, model, inputs, is_training,
+                                                session, args, stride=stride, border=border)
+    reconsLFPatch10 = ReconstructSpatialLFPatch(inLFpatch10, model, inputs, is_training,
+                                                session, args, stride=stride, border=border)
+    reconsLFPatch11 = ReconstructSpatialLFPatch(inLFpatch11, model, inputs, is_training,
+                                                session, args, stride=stride, border=border)
+
+    # stitch the LF patches together to get the final reconstruction LF
+    ReconstructLF[:, :, :, :5, :5, :] = reconsLFPatch00
+    ReconstructLF[:, :, :, :5, -5:, :] = reconsLFPatch01
+    ReconstructLF[:, :, :, -5:, :5, :] = reconsLFPatch10
+    ReconstructLF[:, :, :, -5:, -5:, :] = reconsLFPatch11
+
+    ReconstructLF[ReconstructLF > 1.] = 1.
+    ReconstructLF[ReconstructLF < 0.] = 0.
+    return ReconstructLF
+
+
+def LFUpsampling(inLF, scale=4, method="BICUBIC"):
+    """
+    Upsampling the input low-resolution light field by a given method.
+
+    :param inLF:   input low-resolution light field
+    :param scale:  upscaling factor
+    :param method: given upscaling method
+
+    :return:       upscaled light field
+    """
+    # check the inputs format
+    assert isinstance(method, str), "The argument 'method' should be a string."
+
+    # upsampling the input light field
+    h, w, s, t = inLF.shape
+    upscaledLF = np.zeros([h*scale, w*scale, s, t], dtype=np.uint8)
+    for i in range(s):
+        for j in range(t):
+            lowimg = inLF[:, :, i, j]
+            if method.lower() == "bicubic":
+                upimg = cv2.resize(lowimg, (w * scale, h * scale), interpolation=cv2.INTER_CUBIC)
+            elif method.lower() == "bilinear":
+                upimg = cv2.resize(lowimg, (w * scale, h * scale), interpolation=cv2.INTER_LINEAR)
+            elif method.lower() == "nearest":
+                upimg = cv2.resize(lowimg, (w * scale, h * scale), interpolation=cv2.INTER_NEAREST)
+            else:
+                assert False, "Upsampling method [{}] is not supportable.".format(method)
+            upscaledLF[:, :, i, j] = upimg
+
+    return upscaledLF
 
 
 def main(args):
-
     # ============ Setting the GPU used for model training ============ #
     logging.info("===> Setting the GPUs: {}".format(args.select_gpu))
     os.environ["CUDA_VISIBLE_DEVICES"] = args.select_gpu
-    
+
     # ===================== Definition of params ====================== #
     logging.info("===> Initialization")
-    if args.gamma_A == 0:    # 3x3 -> 7x7
-        inputs = tf.placeholder(tf.float32, [None, None, None, 3, 3, args.channels])
-        groundtruth = tf.placeholder(tf.float32, [None, None, None, 7, 7, args.channels])
-    elif args.gamma_A == 2:  # 5x5 -> 9x9
-        inputs = tf.placeholder(tf.float32, [None, None, None, 5, 5, args.channels])
-        groundtruth = tf.placeholder(tf.float32, [None, None, None, 9, 9, args.channels])
-    elif args.gamma_A == 3:  # 3x3 -> 9x9
-        inputs = tf.placeholder(tf.float32, [None, None, None, 3, 3, args.channels])
-        groundtruth = tf.placeholder(tf.float32, [None, None, None, 9, 9, args.channels])
-    elif args.gamma_A == 4:  # 2x2 -> 8x8
-        inputs = tf.placeholder(tf.float32, [None, None, None, 2, 2, args.channels])
-        groundtruth = tf.placeholder(tf.float32, [None, None, None, 8, 8, args.channels])
-    else:
-        inputs = None
-        groundtruth = None
-
+    inputs = tf.placeholder(tf.float32, [args.batchSize, args.imageSize // args.gamma_S, args.imageSize // args.gamma_S,
+                                         args.viewSize, args.viewSize, args.channels])
+    groundtruth = tf.placeholder(tf.float32, [args.batchSize, args.imageSize, args.imageSize, args.viewSize,
+                                              args.viewSize, args.channels])
     is_training = tf.placeholder(tf.bool, [])
-    learning_rate = tf.placeholder(tf.float32, [])
 
-    logging.info("===> Create Network")
     HDDRNet = import_model(args.gamma_S, args.gamma_A)
-    model = HDDRNet(inputs, groundtruth, is_training, args, state="TRAIN")
+    model = HDDRNet(inputs, groundtruth, is_training, args, state="TEST")
 
-    sess = tf.InteractiveSession(config=tf.ConfigProto(allow_soft_placement=True))
-    opt = tf.train.AdamOptimizer(beta1=args.lr_beta1, learning_rate=learning_rate)
-    train_op = opt.minimize(model.loss, var_list=model.net_variables)
+    config = tf.ConfigProto()
+    config.gpu_options.allow_growth = True
+    sess = tf.InteractiveSession(config=config)
 
     init = tf.global_variables_initializer()
     sess.run(init)
 
-    # ============ Restore the VGG-19 network ============ #
-    if args.perceptual_loss:
-        logging.info("===> Restoring the VGG-19 Network for Perceptual Loss")
-        var = tf.global_variables()
-        vgg_var = [var_ for var_ in var if "vgg19" in var_.name]
-        saver = tf.train.Saver(vgg_var)
-        saver.restore(sess, args.vgg_model)
+    # ================= Restore the pre-trained model ================= #
+    logging.info("===> Resuming the pre-trained model.")
+    saver = tf.train.Saver()
+    try:
+        saver.restore(sess, args.pretrained_model)
+    except ValueError:
+        logging.info("Pretrained model: {} not found.".format(args.pretrained_model))
+        sys.exit(1)
 
-    # ============ Load the Train / Test Data ============ #
-    logging.info("===> Loading the Training and Test Datasets")
-    trainlist = glob.glob(os.path.join(args.datadir, "MSTrain/9x9/*/*.npy"))
-    testlist = glob.glob(os.path.join(args.datadir, "MSTest/9x9/*.npy"))
+    # ===================== Read light field data ===================== #
+    logging.info("===> Reading the light field data")
+    LF = sio.loadmat(args.datapath)["data"]
+    LF = LF.transpose(2, 3, 0, 1, 4)
+    LF = shaveLF_by_factor(LF, args.gamma_S)
+    LF = np.expand_dims(LF, axis=0)
+    Groundtruth = shave_batch_LFs(LF, border=(3, 3))
+    Groundtruth = Groundtruth.squeeze()
 
-    BESTPSNR = 0.0
-    BESTSSIM = 0.0
-    statetype = get_state(args.gamma_S, args.gamma_A)
-    
-    # =========== Restore the pre-trained model ========== #
-    if args.resume:
-        logging.info("Resuming the pre-trained model.")
-        Epoch, BESTPSNR, BESTSSIM = read_stateinfo(os.path.join(args.save_folder, statetype))
-        saver = tf.train.Saver()
-        try:
-            saver.restore(sess, os.path.join(args.save_folder, statetype, "epoch_{:03d}".format(Epoch)))
-            args.start_epoch = Epoch + 1
-        except:
-            logging.info("No saved model found.")
-            args.start_epoch = 0
+    # ================== Downsample the light field =================== #
+    logging.info("===> Downsampling")
+    low_LF = downsampling(LF, rs=args.gamma_S, ra=args.gamma_A, nSig=1.2)
+    low_inLF = low_LF.astype(np.float32) / 255.
 
-    logging.info("===> Start Training")
-    
-    for epoch in range(args.start_epoch, args.num_epoch):
-        random.shuffle(trainlist)
+    # ============= Reconstruct the original light field ============== #
+    logging.info("===> Reconstructing ......")
+    recons_LF = SpatialReconstruction(low_inLF, model, inputs, is_training, sess, args, stride=60, border=(3, 3))
+    recons_LF = recons_LF.squeeze()
+    recons_LF = np.uint8(recons_LF * 255.)
 
-        num_iter = len(trainlist) // args.batchSize
-        lr = adjust_learning_rate(args.lr_start, epoch, step=20)
+    logging.info("===> Calculating the mean PSNR and SSIM values (on luminance channel)......")
+    meanPSNR = np.mean(ApertureWisePSNR(Groundtruth, recons_LF))
+    meanSSIM = np.mean(ApertureWiseSSIM(Groundtruth, recons_LF))
 
-        for ii in range(num_iter):
-            y_batch = np.load(trainlist[ii])
-            y_batch, x_batch = downsampling(y_batch, rs=args.gamma_S, ra=args.gamma_A)
+    Bicubic = LFUpsampling(low_LF.squeeze(), scale=args.gamma_S, method="BICUBIC")
+    Bicubic = shaveLF(Bicubic, border=(3, 3))
+    meanbicubicPSNR = np.mean(ApertureWisePSNR(Groundtruth, Bicubic))
+    meanbicubicSSIM = np.mean(ApertureWiseSSIM(Groundtruth, Bicubic))
 
-            y_batch = y_batch.astype(np.float32) / 255.
-            x_batch = x_batch.astype(np.float32) / 255.
 
-            angular_loss = 0.0
-            spatial_loss = 0.0
-            total_loss = 0.0
-            for j in range(len(y_batch)):
-                x = np.expand_dims(x_batch[j], axis=0)
-                y = np.expand_dims(y_batch[j], axis=0)
-
-                _, aloss, sloss, tloss, recons = sess.run([train_op, model.angular_loss, model.spatial_loss,
-                                                           model.loss, model.Recons],
-                                                          feed_dict={inputs: x,
-                                                                     groundtruth: y,
-                                                                     is_training: True,
-                                                                     learning_rate: lr})
-
-                angular_loss += aloss
-                spatial_loss += sloss
-                total_loss += tloss
-
-            angular_loss /= len(y_batch)
-            spatial_loss /= len(y_batch)
-            total_loss /= len(y_batch)
-
-            logging.info("Epoch {:03d} [{:03d}/{:03d}] |TRAIN|  Angular loss: {:.6f} | Spatial loss: {:.6f} | "
-                         "Total loss: {:.6f} | Learning rate: {:.10f}".format(epoch, ii, num_iter, angular_loss,
-                                                                              spatial_loss, total_loss, lr))
-
-        # ===================== Testing ===================== #
-
-        logging.info("===> Start Testing for Epoch {:03d}".format(epoch))
-        num_testiter = len(testlist) // args.batchSize
-        test_psnr = 0.0
-        test_ssim = 0.0
-        test_angularloss = []
-        test_spatialloss = []
-        test_totalloss = []
-
-        for kk in range(num_testiter):
-            y_batch = np.load(testlist[kk])
-            y_batch, x_batch = downsampling(y_batch, rs=args.gamma_S, ra=args.gamma_A)
-
-            y_batch = y_batch.astype(np.float32) / 255.
-            x_batch = x_batch.astype(np.float32) / 255.
-
-            angular_loss = 0.0
-            spatial_loss = 0.0
-            total_loss = 0.0
-            recons_batch = []
-            for k in range(len(y_batch)):
-                x = np.expand_dims(x_batch[k], axis=0)
-                y = np.expand_dims(y_batch[k], axis=0)
-
-                _, aloss, sloss, tloss, recons = sess.run([train_op, model.angular_loss, model.spatial_loss,
-                                                           model.loss, model.Recons],
-                                                          feed_dict={inputs: x,
-                                                                     groundtruth: y,
-                                                                     is_training: False,
-                                                                     learning_rate: lr})
-
-                angular_loss += aloss
-                spatial_loss += sloss
-                total_loss += tloss
-                recons_batch.append(recons)
-
-            angular_loss /= len(y_batch)  # average value for a single LF image
-            spatial_loss /= len(y_batch)  # average value for a single LF image
-            total_loss /= len(y_batch)  # average value for a single LF image
-
-            logging.info("Epoch {:03d} [{:03d}/{:03d}] |TEST|  Angular loss: {:.6f} | Spatial loss: {:.6f} | "
-                         "Total loss: {:.6f}".format(epoch, kk, num_testiter, angular_loss, spatial_loss, total_loss))
-
-            recons_batch = np.concatenate(recons_batch, axis=0)
-            recons_batch[recons_batch > 1.] = 1.
-            recons_batch[recons_batch < 0.] = 0.
-            item_psnr = batchmeanpsnr(y_batch, recons_batch)  # average value for a single LF image
-            item_ssim = batchmeanssim(y_batch, recons_batch)  # average value for a single LF image
-
-            test_angularloss.append(angular_loss)
-            test_spatialloss.append(spatial_loss)
-            test_totalloss.append(total_loss)
-            test_psnr += item_psnr
-            test_ssim += item_ssim
-
-        test_psnr = test_psnr / len(testlist)
-        test_ssim = test_ssim / len(testlist)
-        avgtest_aloss = np.mean(test_angularloss)
-        avgtest_sloss = np.mean(test_spatialloss)
-        avgtest_tloss = np.mean(test_totalloss)
-        test_dict = {"epoch": epoch,
-                     "TestAvgPSNR": test_psnr,
-                     "TestAvgSSIM": test_ssim,
-                     "TestAvgAngularLoss": avgtest_aloss,
-                     "TestAvgSpatialLoss": avgtest_sloss,
-                     "TestAvgTotalLoss": avgtest_tloss,
-                     "BESTPSNR": BESTPSNR,
-                     "BESTSSIM": BESTSSIM}
-        
-        if test_psnr > BESTPSNR:
-            savefolder = os.path.join(args.save_folder, statetype, "BESTPSNR")
-            path = save_model(sess, savefolder, epoch)
-            test_dict["BESTPSNR"] = test_psnr
-            save_stateinfo(savefolder, test_dict)
-            logging.info("Model saved to {}".format(path))
-            logging.info("PSNR: {:.6f}(previous) update to {:.6f}(current) "
-                         "[BEST PSNR weights saved]".format(BESTPSNR, test_psnr))
-            BESTPSNR = test_psnr
-
-        if test_ssim > BESTSSIM:
-            savefolder = os.path.join(args.save_folder, statetype, "BESTSSIM")
-            path = save_model(sess, savefolder, epoch)
-            test_dict["BESTSSIM"] = test_ssim
-            save_stateinfo(savefolder, test_dict)
-            logging.info("Model saved to {}".format(path))
-            logging.info("SSIM: {:.6f}(previous) update to {:.6f}(current) "
-                         "[BEST SSIM weights saved]".format(BESTSSIM, test_ssim))
-            BESTSSIM = test_ssim
-
-        # =================== Save the epoch training info ===================== #
-        path = save_model(sess, os.path.join(args.save_folder, statetype), epoch)
-        save_stateinfo(os.path.join(args.save_folder, statetype), test_dict)
-        logging.info("Model saved to {}".format(path))
+    logging.info('{0:+^74}'.format(""))
+    logging.info('|{0: ^72}|'.format("Quantitative result for the scene: {}".format(args.datapath.split('/')[-1])))
+    logging.info('|{0: ^72}|'.format(""))
+    logging.info('|{0: ^72}|'.format("Method: HDDRNet |  Mean PSNR: {:.3f}      Mean SSIM: {:.3f}".format(meanPSNR, meanSSIM)))
+    logging.info('|{0: ^72}|'.format("Method: BICUBIC |  Mean PSNR: {:.3f}      Mean SSIM: {:.3f}".format(meanbicubicPSNR, meanbicubicSSIM)))
+    logging.info('{0:+^74}'.format(""))
 
 
 if __name__ == "__main__":

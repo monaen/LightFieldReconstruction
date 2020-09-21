@@ -297,7 +297,9 @@ def main(args):
     HDDRNet = import_model(args.gamma_S, args.gamma_A)
     model = HDDRNet(inputs, groundtruth, is_training, args, state="TEST")
 
-    sess = tf.InteractiveSession(config=tf.ConfigProto(allow_soft_placement=True))
+    config = tf.ConfigProto()
+    config.gpu_options.allow_growth = True
+    sess = tf.InteractiveSession(config=config)
 
     init = tf.global_variables_initializer()
     sess.run(init)
