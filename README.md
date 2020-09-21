@@ -14,8 +14,6 @@ pretrained_models
        |      |--- Ax2
        |      |--- Ax3
        |      |--- Ax4
-       |      |--- A3x3-7x7
-       |      |--- Sx2Ax2
        |--- M-HDDRNet
        |      |--- Sx2
        |      |--- Sx3
@@ -23,6 +21,7 @@ pretrained_models
        |      |--- Ax2
        |      |--- Ax3
        |      |--- Ax4
+       |---Others
        |      |--- A3x3-7x7
        |      |--- Sx2Ax2
        |--- README.md
