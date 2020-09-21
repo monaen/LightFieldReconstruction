@@ -51,8 +51,8 @@ parser.add_argument("--viewSize", type=int, default=5, help="Angular size of the
 parser.add_argument("--channels", type=int, default=1,
                     help="Channels=1 means only the luma channel; Channels=3 means RGB channels (not supported)")
 parser.add_argument("--verbose", default=True, action="store_true", help="Whether print the network structure or not")
-parser.add_argument("--gamma_S", type=int, default=4, choices=[1, 2, 3, 4], help="Spatial downscaling factor")
-parser.add_argument("--gamma_A", type=int, default=1, choices=[0, 1, 2, 3, 4],
+parser.add_argument("--gamma_S", type=int, default=2, choices=[1, 2, 3, 4], help="Spatial downscaling factor")
+parser.add_argument("--gamma_A", type=int, default=2, choices=[0, 1, 2, 3, 4],
                     help="Angular downscaling factor, '0' represents 3x3->7x7")
 parser.add_argument("--num_GRL_HRB", type=int, default=5, help="The number of HRB in GRLNet (only for AAAI model)")
 parser.add_argument("--num_SRe_HRB", type=int, default=3, help="The number of HRB in SReNet (only for AAAI model)")
@@ -289,7 +289,7 @@ def main(args):
     # ===================== Definition of params ====================== #
     logging.info("===> Initialization")
     inputs = tf.placeholder(tf.float32, [args.batchSize, args.imageSize // args.gamma_S, args.imageSize // args.gamma_S,
-                                         args.viewSize, args.viewSize, args.channels])
+                                         args.viewSize // 2 + 1, args.viewSize // 2 + 1, args.channels])
     groundtruth = tf.placeholder(tf.float32, [args.batchSize, args.imageSize, args.imageSize, args.viewSize,
                                               args.viewSize, args.channels])
     is_training = tf.placeholder(tf.bool, [])

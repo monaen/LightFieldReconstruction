@@ -82,7 +82,7 @@ def blur(hrlf, psf):
     """
     blurred_lfimgs = np.zeros_like(hrlf)
     ws = psf.shape[0]
-    t = (ws-1) / 2
+    t = int((ws-1) / 2)
     
     hrlf = np.concatenate([hrlf[:, :t, :], hrlf, hrlf[:, -t:, :]], axis=1)
     hrlf = np.concatenate([hrlf[:t, :, :], hrlf, hrlf[-t:, :, :]], axis=0)
