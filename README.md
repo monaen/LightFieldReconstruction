@@ -24,6 +24,5 @@ pretrained_models
        |---Others
        |      |--- A3x3-7x7
        |      |--- Sx2Ax2
-       |      |--- Sx3Ax2
        |--- README.md
 ```
