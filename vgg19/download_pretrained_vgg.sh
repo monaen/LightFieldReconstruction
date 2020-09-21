@@ -31,7 +31,16 @@ echo "Downloading the pretrained model of HDDRNet for Sx2 task ........"
 wget --no-check-certificate https://github.com/monaen/LightFieldReconstruction/raw/storage/vgg19/weights.part01.rar
 wget --no-check-certificate https://github.com/monaen/LightFieldReconstruction/raw/storage/vgg19/weights.part02.rar
 wget --no-check-certificate https://github.com/monaen/LightFieldReconstruction/raw/storage/vgg19/weights.part03.rar
-
+wget --no-check-certificate https://github.com/monaen/LightFieldReconstruction/raw/storage/vgg19/weights.part04.rar
+wget --no-check-certificate https://github.com/monaen/LightFieldReconstruction/raw/storage/vgg19/weights.part05.rar
+wget --no-check-certificate https://github.com/monaen/LightFieldReconstruction/raw/storage/vgg19/weights.part06.rar
+wget --no-check-certificate https://github.com/monaen/LightFieldReconstruction/raw/storage/vgg19/weights.part07.rar
+wget --no-check-certificate https://github.com/monaen/LightFieldReconstruction/raw/storage/vgg19/weights.part08.rar
+wget --no-check-certificate https://github.com/monaen/LightFieldReconstruction/raw/storage/vgg19/weights.part09.rar
+wget --no-check-certificate https://github.com/monaen/LightFieldReconstruction/raw/storage/vgg19/weights.part10.rar
+wget --no-check-certificate https://github.com/monaen/LightFieldReconstruction/raw/storage/vgg19/weights.part11.rar
+wget --no-check-certificate https://github.com/monaen/LightFieldReconstruction/raw/storage/vgg19/weights.part12.rar
+wget --no-check-certificate https://github.com/monaen/LightFieldReconstruction/raw/storage/vgg19/weights.part13.rar
 
 echo "Unzipping ........"
 
