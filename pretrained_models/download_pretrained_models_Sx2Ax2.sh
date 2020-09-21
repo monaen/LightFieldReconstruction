@@ -45,7 +45,7 @@ wget --no-check-certificate https://github.com/monaen/LightFieldReconstruction/r
 
 echo "Unzipping ........"
 
-unrar x HDDRNet_Sx2.part01.rar && rm -f HDDRNet_Sx2.part*.rar
+unrar x Sx2Ax2.part01.rar && rm -f Sx2Ax2.part*.rar
 
 echo "Done."
 

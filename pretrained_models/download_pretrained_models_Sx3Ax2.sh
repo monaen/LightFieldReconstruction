@@ -42,10 +42,11 @@ wget --no-check-certificate https://github.com/monaen/LightFieldReconstruction/r
 wget --no-check-certificate https://github.com/monaen/LightFieldReconstruction/raw/storage/pretrained_models/Others/Sx3Ax2/Sx3Ax2.part08.rar
 wget --no-check-certificate https://github.com/monaen/LightFieldReconstruction/raw/storage/pretrained_models/Others/Sx3Ax2/Sx3Ax2.part09.rar
 wget --no-check-certificate https://github.com/monaen/LightFieldReconstruction/raw/storage/pretrained_models/Others/Sx3Ax2/Sx3Ax2.part10.rar
+wget --no-check-certificate https://github.com/monaen/LightFieldReconstruction/raw/storage/pretrained_models/Others/Sx3Ax2/Sx3Ax2.part11.rar
 
 echo "Unzipping ........"
 
-unrar x HDDRNet_Sx2.part01.rar && rm -f HDDRNet_Sx2.part*.rar
+unrar x Sx3Ax2.part01.rar && rm -f Sx3Ax2.part*.rar
 
 echo "Done."
 
