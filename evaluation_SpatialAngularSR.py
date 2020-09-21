@@ -90,6 +90,8 @@ def import_model(scale_S, scale_A):
     else:
         if scale_A == 2 and scale_S == 2:
             from networks.HDDRNet_Sx2Ax2 import HDDRNet
+        if scale_A == 2 and scale_S == 3:
+            from networks.HDDRNet_Sx3Ax2 import HDDRNet
     return HDDRNet
 
 
@@ -219,13 +221,13 @@ def SpatialReconstruction(low_LF, model, inputs, is_training, session, args, str
         stride = stride - np.mod(stride, args.gamma_S)
 
     # split the LF into 4D patches
-    inLFpatch00 = low_LF[:, :, :, :5, :5, :]
-    inLFpatch01 = low_LF[:, :, :, :5, -5:, :]
-    inLFpatch10 = low_LF[:, :, :, -5:, :5, :]
-    inLFpatch11 = low_LF[:, :, :, -5:, -5:, :]
+    inLFpatch00 = low_LF[:, :, :, :3, :3, :]
+    inLFpatch01 = low_LF[:, :, :, :3, -3:, :]
+    inLFpatch10 = low_LF[:, :, :, -3:, :3, :]
+    inLFpatch11 = low_LF[:, :, :, -3:, -3:, :]
 
     b, h, w, s, t, c = low_LF.shape
-    ReconstructLF = np.zeros([b, h*args.gamma_S - border[0]*2, w*args.gamma_S - border[1]*2, s, t, c],
+    ReconstructLF = np.zeros([b, h*args.gamma_S - border[0]*2, w*args.gamma_S - border[1]*2, 9, 9, c],
                              dtype=np.float32)
 
     # reconstruct each patch
@@ -249,38 +251,6 @@ def SpatialReconstruction(low_LF, model, inputs, is_training, session, args, str
     return ReconstructLF
 
 
-def LFUpsampling(inLF, scale=4, method="BICUBIC"):
-    """
-    Upsampling the input low-resolution light field by a given method.
-
-    :param inLF:   input low-resolution light field
-    :param scale:  upscaling factor
-    :param method: given upscaling method
-
-    :return:       upscaled light field
-    """
-    # check the inputs format
-    assert isinstance(method, str), "The argument 'method' should be a string."
-
-    # upsampling the input light field
-    h, w, s, t = inLF.shape
-    upscaledLF = np.zeros([h*scale, w*scale, s, t], dtype=np.uint8)
-    for i in range(s):
-        for j in range(t):
-            lowimg = inLF[:, :, i, j]
-            if method.lower() == "bicubic":
-                upimg = cv2.resize(lowimg, (w * scale, h * scale), interpolation=cv2.INTER_CUBIC)
-            elif method.lower() == "bilinear":
-                upimg = cv2.resize(lowimg, (w * scale, h * scale), interpolation=cv2.INTER_LINEAR)
-            elif method.lower() == "nearest":
-                upimg = cv2.resize(lowimg, (w * scale, h * scale), interpolation=cv2.INTER_NEAREST)
-            else:
-                assert False, "Upsampling method [{}] is not supportable.".format(method)
-            upscaledLF[:, :, i, j] = upimg
-
-    return upscaledLF
-
-
 def main(args):
     # ============ Setting the GPU used for model training ============ #
     logging.info("===> Setting the GPUs: {}".format(args.select_gpu))
@@ -297,7 +267,9 @@ def main(args):
     HDDRNet = import_model(args.gamma_S, args.gamma_A)
     model = HDDRNet(inputs, groundtruth, is_training, args, state="TEST")
 
-    sess = tf.InteractiveSession(config=tf.ConfigProto(allow_soft_placement=True))
+    config = tf.ConfigProto()
+    config.gpu_options.allow_growth = True
+    sess = tf.InteractiveSession(config=config)
 
     init = tf.global_variables_initializer()
     sess.run(init)
@@ -322,7 +294,7 @@ def main(args):
 
     # ================== Downsample the light field =================== #
     logging.info("===> Downsampling")
-    low_LF = downsampling(LF, rs=args.gamma_S, ra=args.gamma_A, nSig=1.2)
+    _, low_LF = downsampling(LF, rs=args.gamma_S, ra=args.gamma_A, nSig=1.2)
     low_inLF = low_LF.astype(np.float32) / 255.
 
     # ============= Reconstruct the original light field ============== #
@@ -335,19 +307,14 @@ def main(args):
     meanPSNR = np.mean(ApertureWisePSNR(Groundtruth, recons_LF))
     meanSSIM = np.mean(ApertureWiseSSIM(Groundtruth, recons_LF))
 
-    Bicubic = LFUpsampling(low_LF.squeeze(), scale=args.gamma_S, method="BICUBIC")
-    Bicubic = shaveLF(Bicubic, border=(3, 3))
-    meanbicubicPSNR = np.mean(ApertureWisePSNR(Groundtruth, Bicubic))
-    meanbicubicSSIM = np.mean(ApertureWiseSSIM(Groundtruth, Bicubic))
-
 
     logging.info('{0:+^74}'.format(""))
     logging.info('|{0: ^72}|'.format("Quantitative result for the scene: {}".format(args.datapath.split('/')[-1])))
     logging.info('|{0: ^72}|'.format(""))
     logging.info('|{0: ^72}|'.format("Method: HDDRNet |  Mean PSNR: {:.3f}      Mean SSIM: {:.3f}".format(meanPSNR, meanSSIM)))
-    logging.info('|{0: ^72}|'.format("Method: BICUBIC |  Mean PSNR: {:.3f}      Mean SSIM: {:.3f}".format(meanbicubicPSNR, meanbicubicSSIM)))
     logging.info('{0:+^74}'.format(""))
 
 
 if __name__ == "__main__":
     main(args)
+
