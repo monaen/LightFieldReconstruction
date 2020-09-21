@@ -1,23 +1,31 @@
 #!/usr/bin/env python
-# ============================================================================================================= #
-# |                                      HDDRNet (Tensorflow r1.*>=r1.8)                                      | #
-# | Description:                                                                                              | #
-# |     An Tensorflow implementation of "High-Dimensional Dense Residual Convolutional Neural Network         | #
-# |     for Light Field Reconstruction".                                                                      | #
-# |                                                                                                           | #
-# | Paper:                                                                                                    | #
-# |     High-Dimensional Dense Residual Convolutional Neural Network for Light Field Reconstruction           | #
-# |     Nan Meng, Hayden Kwok-Hay So, Xing Sun, and Edmund Y. Lam                                             | #
-# |     IEEE Transactions on Pattern Analysis and Machine Intelligence (T-PAMI), 2019.                        | #
-# |                                                                                                           | #
-# |     High-order Residual Network for Light Field Super-Resolution                                          | #
-# |     Nan Meng, Xiaofei Wu, Jianzhuang Liu, Edmund Y. Lam                                                   | #
-# |     The 34th AAAI Conference on Artificial Intelligence, 2020.                                            | #
-# |                                                                                                           | #
-# | Contact:                                                                                                  | #
-# |     author: Nan Meng                                                                                      | #
-# |     email:  u3003637@connect.hku.hk   |   nanmeng.uestc@hotmail.com                                       | #
-# ============================================================================================================= #
+# ====================================================================================================================== #
+# |                                      HDDRNet (Tensorflow r1.*>=r1.8)                                               | #
+# | Description:                                                                                                       | #
+# |     An Tensorflow implementation of "High-Dimensional Dense Residual Convolutional Neural Network                  | #
+# |     for Light Field Reconstruction".                                                                               | #
+# |                                                                                                                    | #
+# | Citation:                                                                                                          | #
+# |     @article{meng2019high,                                                                                         | #
+# |              title={High-dimensional dense residual convolutional neural network for light field reconstruction},  | #
+# |              author={Meng, Nan and So, Hayden Kwok-Hay and Sun, Xing and Lam, Edmund},                             | #
+# |              journal={IEEE Transactions on Pattern Analysis and Machine Intelligence},                             | #
+# |              year={2019}                                                                                           | #
+# |             }                                                                                                      | #
+# |     @article{meng2020high,                                                                                         | #
+# |              title={High-order residual network for light field super-resolution},                                 | #
+# |              author={Meng, Nan and Wu, xiaofei and Liu, Jianzhuang and Lam, Edmund},                               | #
+# |              journal={Association for the Advancement of Artificial Intelligence},                                 | #
+# |              volume={34},                                                                                          | #
+# |              number={7},                                                                                           | #
+# |              pages={11757-11764},                                                                                  | #
+# |              month={February},                                                                                     | #
+# |              year={2020},                                                                                          | #
+# |             }                                                                                                      | #
+# | Contact:                                                                                                           | #
+# |     author: Nan Meng                                                                                               | #
+# |     email:  u3003637@connect.hku.hk   |   nanmeng.uestc@hotmail.com                                                | #
+# ====================================================================================================================== #
 
 import argparse
 import glob
