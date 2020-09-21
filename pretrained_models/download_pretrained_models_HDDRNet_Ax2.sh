@@ -30,7 +30,7 @@
 # This script downloads the pretrained model of HDDRNet for Sx2 task and unzips it.
 # DIR = "$( cd "$(dirname "$0")" ; pwd -P )"
 
-echo "Downloading the pretrained model of HDDRNet for Sx2 task ........"
+echo "Downloading the pretrained model of HDDRNet for Ax2 task ........"
 
 wget --no-check-certificate https://github.com/monaen/LightFieldReconstruction/raw/storage/pretrained_models/HDDRNet/Ax2/HDDRNet_Ax2.part1.rar
 wget --no-check-certificate https://github.com/monaen/LightFieldReconstruction/raw/storage/pretrained_models/HDDRNet/Ax2/HDDRNet_Ax2.part2.rar
