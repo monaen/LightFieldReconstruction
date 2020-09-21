@@ -148,11 +148,9 @@ Paper
 - [x] Angular super-resolution 4x (2x2->8x8) framework.
 - [x] Spatial super-resolution 2x Angular super-resolution 2x framework.
 - [x] The pretrained models for spatial Sx2, Sx3, Sx4.
-- [ ] The pretrained models for angular Ax2, Ax2.3, Ax3, Ax4.
-- [ ] The pretrained models for spatio-angular Sx2Ax2.
-- [ ] Training data.
-- [ ] Testing data.
-- [ ] Evaluation code.
+- [x] The pretrained models for angular Ax2, Ax2.3, Ax3, Ax4.
+- [x] The pretrained models for spatio-angular Sx2Ax2.
+- [x] Evaluation code.
 - [ ] Results and analysis.
 * AAAI
 - [ ] Spatial super-resolution 2x framework and the pretrained model.
