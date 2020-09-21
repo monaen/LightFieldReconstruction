@@ -32,21 +32,14 @@
 
 echo "Downloading the pretrained model of HDDRNet for Sx2 task ........"
 
-wget --no-check-certificate https://github.com/monaen/LightFieldReconstruction/raw/storage/pretrained_models/Others/Sx3Ax2/Sx3Ax2.part01.rar
-wget --no-check-certificate https://github.com/monaen/LightFieldReconstruction/raw/storage/pretrained_models/Others/Sx3Ax2/Sx3Ax2.part02.rar
-wget --no-check-certificate https://github.com/monaen/LightFieldReconstruction/raw/storage/pretrained_models/Others/Sx3Ax2/Sx3Ax2.part03.rar
-wget --no-check-certificate https://github.com/monaen/LightFieldReconstruction/raw/storage/pretrained_models/Others/Sx3Ax2/Sx3Ax2.part04.rar
-wget --no-check-certificate https://github.com/monaen/LightFieldReconstruction/raw/storage/pretrained_models/Others/Sx3Ax2/Sx3Ax2.part05.rar
-wget --no-check-certificate https://github.com/monaen/LightFieldReconstruction/raw/storage/pretrained_models/Others/Sx3Ax2/Sx3Ax2.part06.rar
-wget --no-check-certificate https://github.com/monaen/LightFieldReconstruction/raw/storage/pretrained_models/Others/Sx3Ax2/Sx3Ax2.part07.rar
-wget --no-check-certificate https://github.com/monaen/LightFieldReconstruction/raw/storage/pretrained_models/Others/Sx3Ax2/Sx3Ax2.part08.rar
-wget --no-check-certificate https://github.com/monaen/LightFieldReconstruction/raw/storage/pretrained_models/Others/Sx3Ax2/Sx3Ax2.part09.rar
-wget --no-check-certificate https://github.com/monaen/LightFieldReconstruction/raw/storage/pretrained_models/Others/Sx3Ax2/Sx3Ax2.part10.rar
-wget --no-check-certificate https://github.com/monaen/LightFieldReconstruction/raw/storage/pretrained_models/Others/Sx3Ax2/Sx3Ax2.part11.rar
+wget --no-check-certificate https://github.com/monaen/LightFieldReconstruction/raw/storage/pretrained_models/Others/A3x3_7x7/A3x3_7x7.part1.rar
+wget --no-check-certificate https://github.com/monaen/LightFieldReconstruction/raw/storage/pretrained_models/Others/A3x3_7x7/A3x3_7x7.part2.rar
+wget --no-check-certificate https://github.com/monaen/LightFieldReconstruction/raw/storage/pretrained_models/Others/A3x3_7x7/A3x3_7x7.part3.rar
+wget --no-check-certificate https://github.com/monaen/LightFieldReconstruction/raw/storage/pretrained_models/Others/A3x3_7x7/A3x3_7x7.part4.rar
 
 echo "Unzipping ........"
 
-unrar x Sx3Ax2.part01.rar && rm -f Sx3Ax2.part*.rar
+unrar x A3x3_7x7.part01.rar && rm -f A3x3_7x7.part*.rar
 
 echo "Done."
 
