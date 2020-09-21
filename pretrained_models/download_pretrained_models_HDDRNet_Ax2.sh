@@ -27,7 +27,7 @@
 # |     email:  u3003637@connect.hku.hk  |   nanmeng.uestc@hotmail.com                                                 | #
 # ====================================================================================================================== #
 
-# This script downloads the pretrained model of HDDRNet for Sx2 task and unzips it.
+# This script downloads the pretrained model of HDDRNet for Ax2 task and unzips it.
 # DIR = "$( cd "$(dirname "$0")" ; pwd -P )"
 
 echo "Downloading the pretrained model of HDDRNet for Ax2 task ........"

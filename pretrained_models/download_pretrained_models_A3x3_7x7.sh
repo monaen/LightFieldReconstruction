@@ -27,10 +27,10 @@
 # |     email:  u3003637@connect.hku.hk  |   nanmeng.uestc@hotmail.com                                                 | #
 # ====================================================================================================================== #
 
-# This script downloads the pretrained model of HDDRNet for Sx2 task and unzips it.
+# This script downloads the pretrained model of HDDRNet for A3x3_7x7 task and unzips it.
 # DIR = "$( cd "$(dirname "$0")" ; pwd -P )"
 
-echo "Downloading the pretrained model of HDDRNet for Sx2 task ........"
+echo "Downloading the pretrained model of HDDRNet for A3x3_7x7 task ........"
 
 wget --no-check-certificate https://github.com/monaen/LightFieldReconstruction/raw/storage/pretrained_models/Others/A3x3_7x7/A3x3_7x7.part1.rar
 wget --no-check-certificate https://github.com/monaen/LightFieldReconstruction/raw/storage/pretrained_models/Others/A3x3_7x7/A3x3_7x7.part2.rar
@@ -39,7 +39,7 @@ wget --no-check-certificate https://github.com/monaen/LightFieldReconstruction/r
 
 echo "Unzipping ........"
 
-unrar x A3x3_7x7.part01.rar && rm -f A3x3_7x7.part*.rar
+unrar x A3x3_7x7.part1.rar && rm -f A3x3_7x7.part*.rar
 
 echo "Done."
 
