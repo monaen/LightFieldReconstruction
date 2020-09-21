@@ -22,10 +22,6 @@ This Project is a Tensorflow implementation of
 git clone https://github.com/monaen/LightFieldReconstruction.git --branch master --single-branch
 ```
 
-* Preparing the Dataset (preparing)
-```commandline
-```
-
 ## Training
 #### Training models for spatial or angular or both super-resolution tasks
 * Training the model for spatial super-resolution (e.g. Sx4). You need to specify the `gamma_S` for different spatial SR tasks.
