@@ -1,8 +1,5 @@
 # High-Dimensional Dense Residual Convolutional Neural Network for Light Field Reconstruction [![MIT Licence](https://badges.frapsoft.com/os/mit/mit.svg?v=103)](https://opensource.org/licenses/mit-license.php)
 
-**Note: The code for this project will be uploaded gradually.**
-**Because of the COVID-19 and some other factors, the rest of the project may updated after August, 2020 (sorry about that)**
-
 This Project is a Tensorflow implementation of 
 * "High-Dimensional Dense Residual Convolutional Neural Network for Light Field Reconstruction" *IEEE Transactions on Pattern Analysis and Machine Intelligence*, **Nan Meng**, Hayden K-H. So, Xing Sun, Edmund Y. Lam, 2019. [[Paper]](https://arxiv.org/pdf/1910.01426.pdf)
 * "High-order Residual Network for Light Field Super-Resolution" *The 34th AAAI Conference on Artificial Intelligence*, **Nan Meng**, Xiaofei Wu, Jianzhuang Liu, Edmund Y. Lam, 2020. [[Paper]](https://arxiv.org/pdf/2003.13094.pdf)
@@ -92,6 +89,25 @@ python evaluation_SpatialSR.py --datapath data/evaluation/buddha.mat \
                                --select_gpu 0 --verbose
 ```
 * Angular SR evaluation (Ax4, Ax3, Ax2, A3x3_7x7)  [Preparing]
+
+* Spatial and Angular SR evaluation (Sx2Ax2, Sx3Ax2)
+
+Note: We provide the pretrained model for Sx2Ax2, but the model is not well-trained. We also provide the code for Sx3Ax2 task.
+Here, we provide an example to evaluate the performance on Sx2Ax2 task as guidance. 
+```commandline
+# change to the root folder 'LightFieldReconstruction' of the project
+cd data
+bash download_evaluation_data.sh
+cd ../pretrained_models
+bash download_pretrained_models_Sx2Ax2.sh
+cd ..
+
+python evaluation_SpatialAngularSR.py --datapath data/evaluation/buddha.mat \
+                                      --gamma_S 2 \
+                                      --gamma_A 2 \
+                                      --pretrained_model pretrained_models/Others/Sx2Ax2/weights \
+                                      --select_gpu 0 --verbose
+```
 
 ## Using the pretrained model
 To download the pretrained mdoels, please change the directory into the folder `pretrained_models` and run the corresponding bash files. For example, to download the HDDRNet_Sx4 pretrained model, 
