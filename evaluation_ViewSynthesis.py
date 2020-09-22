@@ -233,7 +233,7 @@ def main(args):
     logging.info("===> Reconstructing ......")
     start_time = time.time()
     recons_LF = sess.run(model.Recons, feed_dict={inputs: low_inLF, is_training: False})
-    logging.info("Excute Time: {0:.6f}".format(time.time() - start_time))
+    logging.info("Execute Time: {0:.6f}".format(time.time() - start_time))
 
     recons_LF = recons_LF.squeeze()
     recons_LF = np.uint8(recons_LF * 255.)
