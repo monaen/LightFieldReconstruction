@@ -53,7 +53,7 @@ wget --no-check-certificate https://github.com/monaen/LightFieldReconstruction/r
 wget --no-check-certificate https://github.com/monaen/LightFieldReconstruction/raw/storage/data/testset/reflective20/reflective_30.mat
 wget --no-check-certificate https://github.com/monaen/LightFieldReconstruction/raw/storage/data/testset/reflective20/reflective_32.mat
 
-mkdir testset/occlusions20
+mkdir testset/reflective20
 mv reflective_1.mat testset/reflective20/reflective_1.mat
 mv reflective_3.mat testset/reflective20/reflective_3.mat
 mv reflective_5.mat testset/reflective20/reflective_5.mat
