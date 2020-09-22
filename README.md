@@ -171,7 +171,7 @@ Paper
 - [x] The pretrained models for spatio-angular Sx2Ax2.
 - [x] Testset.
 - [x] Evaluation code.
-- [ ] Results and analysis.
+- [x] Results and analysis.
 * AAAI
 - [ ] Spatial super-resolution 2x framework.
 - [ ] Spatial super-resolution 3x framework.
