@@ -44,7 +44,7 @@ tf.logging.set_verbosity(tf.logging.ERROR)
 
 # ============================== Experimental settings ============================== #
 parser = argparse.ArgumentParser(description="HDDRNet Tensorflow Implementation")
-parser.add_argument("--datapath", type=str, default="./data/testset/occlusions20/occlusions_48.mat", help="The evaluation data path")
+parser.add_argument("--datapath", type=str, default="./data/testset/reflective20/reflective_1.mat", help="The evaluation data path")
 parser.add_argument("--batchSize", type=int, default=1, help="The batchsize of the input data")
 parser.add_argument("--patchSize", type=int, default=120, help="Spatial size of the input light fields")
 parser.add_argument("--channels", type=int, default=1,

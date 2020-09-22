@@ -103,7 +103,7 @@ python evaluation_ViewSynthesis.py --datapath data/testset/occlusions20/occlusio
                                    --select_gpu 0 --verbose
 
 
-python evaluation_ViewSynthesis_Patchwise.py --datapath data/occlusions20/occlusions_48.mat \
+python evaluation_ViewSynthesis_Patchwise.py --datapath data/testset/occlusions20/occlusions_48.mat \
                                              --gamma_A 4 \
                                              --pretrained_model pretrained_models/HDDRNet/Ax4/HDDRNet \
                                              --select_gpu 0 --verbose
