@@ -150,6 +150,7 @@ Paper
 - [x] The pretrained models for spatial Sx2, Sx3, Sx4.
 - [x] The pretrained models for angular Ax2, Ax2.3, Ax3, Ax4.
 - [x] The pretrained models for spatio-angular Sx2Ax2.
+- [x] Testset.
 - [x] Evaluation code.
 - [ ] Results and analysis.
 * AAAI
