@@ -27,19 +27,19 @@
 # |     email:  u3003637@connect.hku.hk  |   nanmeng.uestc@hotmail.com                                                 | #
 # ====================================================================================================================== #
 
-# This script downloads the pretrained model of HDDRNet for A3x3_7x7 task and unzips it.
+# This script downloads the pretrained model of M-HDDRNet for Ax4 task and unzips it.
 # DIR = "$( cd "$(dirname "$0")" ; pwd -P )"
 
-echo "Downloading the pretrained model of HDDRNet for A3x3_7x7 task ........"
+echo "Downloading the pretrained model of M-HDDRNet for Ax4 task ........"
 
-wget --no-check-certificate https://github.com/monaen/LightFieldReconstruction/raw/storage/pretrained_models/Others/A3x3_7x7/A3x3_7x7.part1.rar
-wget --no-check-certificate https://github.com/monaen/LightFieldReconstruction/raw/storage/pretrained_models/Others/A3x3_7x7/A3x3_7x7.part2.rar
-wget --no-check-certificate https://github.com/monaen/LightFieldReconstruction/raw/storage/pretrained_models/Others/A3x3_7x7/A3x3_7x7.part3.rar
-wget --no-check-certificate https://github.com/monaen/LightFieldReconstruction/raw/storage/pretrained_models/Others/A3x3_7x7/A3x3_7x7.part4.rar
+wget --no-check-certificate https://github.com/monaen/LightFieldReconstruction/raw/storage/pretrained_models/M-HDDRNet/Ax4/M-HDDRNet_Ax4.part1.rar
+wget --no-check-certificate https://github.com/monaen/LightFieldReconstruction/raw/storage/pretrained_models/M-HDDRNet/Ax4/M-HDDRNet_Ax4.part2.rar
+wget --no-check-certificate https://github.com/monaen/LightFieldReconstruction/raw/storage/pretrained_models/M-HDDRNet/Ax4/M-HDDRNet_Ax4.part3.rar
+
 
 echo "Unzipping ........"
 
-unrar x A3x3_7x7.part1.rar && rm -f A3x3_7x7.part*.rar
+unrar x M-HDDRNet_Ax4.part1.rar && rm -f M-HDDRNet_Ax4.part*.rar
 
 echo "Done."
 

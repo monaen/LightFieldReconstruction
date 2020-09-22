@@ -150,17 +150,18 @@ Paper
 - [x] The pretrained models for spatial Sx2, Sx3, Sx4.
 - [x] The pretrained models for angular Ax2, Ax2.3, Ax3, Ax4.
 - [x] The pretrained models for spatio-angular Sx2Ax2.
+- [x] Testset.
 - [x] Evaluation code.
 - [ ] Results and analysis.
 * AAAI
-- [ ] Spatial super-resolution 2x framework and the pretrained model.
-- [ ] Spatial super-resolution 3x framework and the pretrained model.
-- [ ] Spatial super-resolution 4x framework and the pretrained model.
-- [ ] Angular super-resolution 2x (5x5->9x9) framework and the pretrained model.
-- [ ] Angular super-resolution 2.3x (3x3->7x7) framework and the pretrained model.
-- [ ] Angular super-resolution 3x (3x3->9x9) framework and the pretrained model.
-- [ ] Angular super-resolution 4x (2x2->8x8) framework and the pretrained model.
-- [ ] Other materials.
+- [ ] Spatial super-resolution 2x framework.
+- [ ] Spatial super-resolution 3x framework.
+- [ ] Spatial super-resolution 4x framework.
+- [ ] Angular super-resolution 2x (5x5->9x9).
+- [ ] Angular super-resolution 2.3x (3x3->7x7).
+- [ ] Angular super-resolution 3x (3x3->9x9).
+- [ ] Angular super-resolution 4x (2x2->8x8).
+- [x] Other materials.
 
 ## Acknowledgement
 Our code is released under [MIT License](https://github.com/monaen/LightFieldReconstruction/blob/master/LICENSE). We would like to appreciate the GPU support from **Lee Ultrasound Imaging Group** of [Prof.Wei-Ning Lee](https://www.eee.hku.hk/~wnlee/people.html)
