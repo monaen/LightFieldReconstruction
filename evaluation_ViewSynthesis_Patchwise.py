@@ -46,8 +46,7 @@ tf.logging.set_verbosity(tf.logging.ERROR)
 parser = argparse.ArgumentParser(description="HDDRNet Tensorflow Implementation")
 parser.add_argument("--datapath", type=str, default="./data/testset/occlusions20/occlusions_48.mat", help="The evaluation data path")
 parser.add_argument("--batchSize", type=int, default=1, help="The batchsize of the input data")
-parser.add_argument("--imageSize", type=int, default=96, help="Spatial size of the input light fields")
-parser.add_argument("--viewSize", type=int, default=5, help="Angular size of the input light fields")
+parser.add_argument("--patchSize", type=int, default=120, help="Spatial size of the input light fields")
 parser.add_argument("--channels", type=int, default=1,
                     help="Channels=1 means only the luma channel; Channels=3 means RGB channels (not supported)")
 parser.add_argument("--verbose", default=True, action="store_true", help="Whether print the network structure or not")
@@ -172,6 +171,36 @@ def get_indices(data, rs=4, patchsize=96, stride=30):
     return indices
 
 
+def ReconstructSpatialLFPatch(LFpatch, model, inputs, is_training, session, args, stride=60, border=(3, 3)):
+    """
+    Spatial reconstruct for a LF patch.
+
+    :param LFpatch:     input LF patch
+    :param model:       network
+    :param inputs:      inputs of the network
+    :param is_training: scala tensor to indicate whether need training
+    :param session:     tensorflow session
+    :param args:        arguments
+    :param stride:      stride for reconstruction
+    :param border:      shaved border of the final reconstructed LF patch
+
+    :return:            reconstructed LF patch (border shaved)
+    """
+    recons_indices = get_indices(LFpatch, rs=args.gamma_S, patchsize=args.patchSize, stride=stride)
+    inPatches, _ = LF_split_patches(LFpatch, patchsize=args.patchSize, stride=stride)
+    reconPatches = []
+    for i in tqdm(range(len(inPatches))):
+        in_patch = inPatches[i]
+        recon_patch = session.run(model.Recons, feed_dict={inputs: in_patch, is_training: False})
+        reconPatches.append(recon_patch)
+
+    reconsPatch_shaved = shaved_LF_reconstruct(reconPatches, recons_indices, border=border)
+
+    reconsPatch_shaved[reconsPatch_shaved > 1.] = 1.
+    reconsPatch_shaved[reconsPatch_shaved < 0.] = 0.
+    return reconsPatch_shaved
+
+
 def main(args):
     # ============ Setting the GPU used for model training ============ #
     logging.info("===> Setting the GPUs: {}".format(args.select_gpu))
@@ -219,22 +248,21 @@ def main(args):
     logging.info("===> Reading the light field data")
     LF = sio.loadmat(args.datapath)["data"]
     LF = LF.transpose(2, 3, 0, 1)
-    LF = shaveLF(LF, border=(60, 60))
     LF = np.expand_dims(LF, axis=0)
     LF = np.expand_dims(LF, axis=-1)
 
     # ================== Downsample the light field =================== #
     logging.info("===> Downsampling")
     Groundtruth, low_LF = downsampling(LF, rs=args.gamma_S, ra=args.gamma_A, nSig=1.2)
+    Groundtruth = shave_batch_LFs(Groundtruth, border=(10, 10))
     Groundtruth = Groundtruth.squeeze()
     low_inLF = low_LF.astype(np.float32) / 255.
 
     # ============= Reconstruct the original light field ============== #
     logging.info("===> Reconstructing ......")
-    start_time = time.time()
-    recons_LF = sess.run(model.Recons, feed_dict={inputs: low_inLF, is_training: False})
-    logging.info("Excute Time: {0:.6f}".format(time.time() - start_time))
 
+    # recons_LF = sess.run(model.Recons, feed_dict={inputs: low_inLF, is_training: False})
+    recons_LF = ReconstructSpatialLFPatch(low_inLF, model, inputs, is_training, sess, args, stride=60, border=(10, 10))
     recons_LF = recons_LF.squeeze()
     recons_LF = np.uint8(recons_LF * 255.)
 
