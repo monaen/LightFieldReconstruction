@@ -231,11 +231,11 @@ def angular_pixel_shuffle(x, rv_in, rv_out, verbose=True):
     out = tf.reshape(out, [shape[0], shape[1], shape[2], out_channels, rv_out, rv_out, in_sview, in_tview])
     out = tf.transpose(out, (0, 1, 2, 3, 6, 4, 7, 5))
     out = tf.reshape(out, (shape[0], shape[1], shape[2], out_channels, rv_out*in_sview, rv_out*in_tview))
-    out = tf.reshape(out, (shape[0], shape[1], shape[2], out_channels, rv_out*in_sview/rv_in, rv_in ,
-                           rv_out*in_tview/rv_in, rv_in))
+    out = tf.reshape(out, (shape[0], shape[1], shape[2], out_channels, int(rv_out*in_sview/rv_in), rv_in ,
+                           int(rv_out*in_tview/rv_in), rv_in))
     out = tf.transpose(out, (0, 1, 2, 3, 5, 7, 4, 6))
-    out = tf.reshape(out, (shape[0], shape[1], shape[2], out_channels*rv_in*rv_in, rv_out*in_sview/rv_in,
-                           rv_out*in_tview/rv_in))
+    out = tf.reshape(out, (shape[0], shape[1], shape[2], out_channels*rv_in*rv_in, int(rv_out*in_sview/rv_in),
+                           int(rv_out*in_tview/rv_in)))
     out = tf.transpose(out, (0, 1, 2, 4, 5, 3))
 
     if verbose:

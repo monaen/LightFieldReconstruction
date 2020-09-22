@@ -9,30 +9,15 @@ __pycache__/
 # Distribution / packaging
 .Python
 .idea
-build/
+
+# Project
 log/
 pretrained_models/M-HDDRNet
 pretrained_models/HDDRNet
 pretrained_models/Others
-data/
-develop-eggs/
-dist/
-downloads/
-eggs/
-.eggs/
-lib/
-lib64/
-parts/
-sdist/
-var/
-log/
-wheels/
-pip-wheel-metadata/
-share/python-wheels/
-*.egg-info/
-.installed.cfg
-*.egg
-MANIFEST
+data/evaluation
+data/testset
+
 
 # PyInstaller
 #  Usually these files are written by a python script from a template

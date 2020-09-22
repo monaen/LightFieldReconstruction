@@ -32,26 +32,26 @@
 
 echo "Downloading the sample light field data for evaluation ........"
 
-wget --no-check-certificate https://github.com/monaen/LightFieldReconstruction/raw/storage/data/evaluation/occlusions20/occlusions_1.mat
-wget --no-check-certificate https://github.com/monaen/LightFieldReconstruction/raw/storage/data/evaluation/occlusions20/occlusions_12.mat
-wget --no-check-certificate https://github.com/monaen/LightFieldReconstruction/raw/storage/data/evaluation/occlusions20/occlusions_15.mat
-wget --no-check-certificate https://github.com/monaen/LightFieldReconstruction/raw/storage/data/evaluation/occlusions20/occlusions_18.mat
-wget --no-check-certificate https://github.com/monaen/LightFieldReconstruction/raw/storage/data/evaluation/occlusions20/occlusions_22.mat
-wget --no-check-certificate https://github.com/monaen/LightFieldReconstruction/raw/storage/data/evaluation/occlusions20/occlusions_24.mat
-wget --no-check-certificate https://github.com/monaen/LightFieldReconstruction/raw/storage/data/evaluation/occlusions20/occlusions_26.mat
-wget --no-check-certificate https://github.com/monaen/LightFieldReconstruction/raw/storage/data/evaluation/occlusions20/occlusions_27.mat
-wget --no-check-certificate https://github.com/monaen/LightFieldReconstruction/raw/storage/data/evaluation/occlusions20/occlusions_3.mat
-wget --no-check-certificate https://github.com/monaen/LightFieldReconstruction/raw/storage/data/evaluation/occlusions20/occlusions_30.mat
-wget --no-check-certificate https://github.com/monaen/LightFieldReconstruction/raw/storage/data/evaluation/occlusions20/occlusions_32.mat
-wget --no-check-certificate https://github.com/monaen/LightFieldReconstruction/raw/storage/data/evaluation/occlusions20/occlusions_36.mat
-wget --no-check-certificate https://github.com/monaen/LightFieldReconstruction/raw/storage/data/evaluation/occlusions20/occlusions_39.mat
-wget --no-check-certificate https://github.com/monaen/LightFieldReconstruction/raw/storage/data/evaluation/occlusions20/occlusions_42.mat
-wget --no-check-certificate https://github.com/monaen/LightFieldReconstruction/raw/storage/data/evaluation/occlusions20/occlusions_46.mat
-wget --no-check-certificate https://github.com/monaen/LightFieldReconstruction/raw/storage/data/evaluation/occlusions20/occlusions_48.mat
-wget --no-check-certificate https://github.com/monaen/LightFieldReconstruction/raw/storage/data/evaluation/occlusions20/occlusions_50.mat
-wget --no-check-certificate https://github.com/monaen/LightFieldReconstruction/raw/storage/data/evaluation/occlusions20/occlusions_51.mat
-wget --no-check-certificate https://github.com/monaen/LightFieldReconstruction/raw/storage/data/evaluation/occlusions20/occlusions_6.mat
-wget --no-check-certificate https://github.com/monaen/LightFieldReconstruction/raw/storage/data/evaluation/occlusions20/occlusions_9.mat
+wget --no-check-certificate https://github.com/monaen/LightFieldReconstruction/raw/storage/data/testset/occlusions20/occlusions_1.mat
+wget --no-check-certificate https://github.com/monaen/LightFieldReconstruction/raw/storage/data/testset/occlusions20/occlusions_12.mat
+wget --no-check-certificate https://github.com/monaen/LightFieldReconstruction/raw/storage/data/testset/occlusions20/occlusions_15.mat
+wget --no-check-certificate https://github.com/monaen/LightFieldReconstruction/raw/storage/data/testset/occlusions20/occlusions_18.mat
+wget --no-check-certificate https://github.com/monaen/LightFieldReconstruction/raw/storage/data/testset/occlusions20/occlusions_22.mat
+wget --no-check-certificate https://github.com/monaen/LightFieldReconstruction/raw/storage/data/testset/occlusions20/occlusions_24.mat
+wget --no-check-certificate https://github.com/monaen/LightFieldReconstruction/raw/storage/data/testset/occlusions20/occlusions_26.mat
+wget --no-check-certificate https://github.com/monaen/LightFieldReconstruction/raw/storage/data/testset/occlusions20/occlusions_27.mat
+wget --no-check-certificate https://github.com/monaen/LightFieldReconstruction/raw/storage/data/testset/occlusions20/occlusions_3.mat
+wget --no-check-certificate https://github.com/monaen/LightFieldReconstruction/raw/storage/data/testset/occlusions20/occlusions_30.mat
+wget --no-check-certificate https://github.com/monaen/LightFieldReconstruction/raw/storage/data/testset/occlusions20/occlusions_32.mat
+wget --no-check-certificate https://github.com/monaen/LightFieldReconstruction/raw/storage/data/testset/occlusions20/occlusions_36.mat
+wget --no-check-certificate https://github.com/monaen/LightFieldReconstruction/raw/storage/data/testset/occlusions20/occlusions_39.mat
+wget --no-check-certificate https://github.com/monaen/LightFieldReconstruction/raw/storage/data/testset/occlusions20/occlusions_42.mat
+wget --no-check-certificate https://github.com/monaen/LightFieldReconstruction/raw/storage/data/testset/occlusions20/occlusions_46.mat
+wget --no-check-certificate https://github.com/monaen/LightFieldReconstruction/raw/storage/data/testset/occlusions20/occlusions_48.mat
+wget --no-check-certificate https://github.com/monaen/LightFieldReconstruction/raw/storage/data/testset/occlusions20/occlusions_50.mat
+wget --no-check-certificate https://github.com/monaen/LightFieldReconstruction/raw/storage/data/testset/occlusions20/occlusions_51.mat
+wget --no-check-certificate https://github.com/monaen/LightFieldReconstruction/raw/storage/data/testset/occlusions20/occlusions_6.mat
+wget --no-check-certificate https://github.com/monaen/LightFieldReconstruction/raw/storage/data/testset/occlusions20/occlusions_9.mat
 
 mkdir testset/occlusions20
 mv occlusions_1.mat testset/occlusions20/occlusions_1.mat

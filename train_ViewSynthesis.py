@@ -182,7 +182,9 @@ def main(args):
     HDDRNet = import_model(args.gamma_S, args.gamma_A)
     model = HDDRNet(inputs, groundtruth, is_training, args, state="TRAIN")
 
-    sess = tf.InteractiveSession(config=tf.ConfigProto(allow_soft_placement=True))
+    config = tf.ConfigProto()
+    config.gpu_options.allow_growth = True
+    sess = tf.InteractiveSession(config=config)
     opt = tf.train.AdamOptimizer(beta1=args.lr_beta1, learning_rate=learning_rate)
     train_op = opt.minimize(model.loss, var_list=model.net_variables)
 
