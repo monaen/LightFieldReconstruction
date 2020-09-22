@@ -88,7 +88,20 @@ python evaluation_SpatialSR.py --datapath data/evaluation/buddha.mat \
                                --pretrained_model pretrained_models/HDDRNet/Sx4/HDDRNet \
                                --select_gpu 0 --verbose
 ```
-* Angular SR evaluation (Ax4, Ax3, Ax2, A3x3_7x7)  [Preparing]
+* Angular SR evaluation (Ax4, Ax3, Ax2, A3x3_7x7)
+```commandline
+# change to the root folder 'LightFieldReconstruction' of the project
+cd data
+bash download_occlusions20.sh
+cd ../pretrained_models
+bash download_pretrained_models_HDDRNet_Ax4.sh
+cd ..
+
+python evaluation_ViewSynthesis.py --datapath data/testset/occlusions20/occlusions_1.mat \
+                                   --gamma_A 4 \
+                                   --pretrained_model pretrained_models/HDDRNet/Ax4/HDDRNet \
+                                   --select_gpu 0 --verbose
+```
 
 * Spatial and Angular SR evaluation (Sx2Ax2, Sx3Ax2)
 
