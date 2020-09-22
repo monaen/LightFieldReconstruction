@@ -97,10 +97,16 @@ cd ../pretrained_models
 bash download_pretrained_models_HDDRNet_Ax4.sh
 cd ..
 
-python evaluation_ViewSynthesis.py --datapath data/testset/occlusions20/occlusions_1.mat \
+python evaluation_ViewSynthesis.py --datapath data/testset/occlusions20/occlusions_48.mat \
                                    --gamma_A 4 \
                                    --pretrained_model pretrained_models/HDDRNet/Ax4/HDDRNet \
                                    --select_gpu 0 --verbose
+
+
+python evaluation_ViewSynthesis_Patchwise.py --datapath data/occlusions20/occlusions_48.mat \
+                                             --gamma_A 4 \
+                                             --pretrained_model pretrained_models/HDDRNet/Ax4/HDDRNet \
+                                             --select_gpu 0 --verbose
 ```
 
 * Spatial and Angular SR evaluation (Sx2Ax2, Sx3Ax2)
