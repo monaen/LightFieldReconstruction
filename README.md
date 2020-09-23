@@ -26,5 +26,11 @@ pretrained_models
        |      |--- Sx2Ax2
        |--- README.md
 vgg19
-       |---weights
+       |--- weights
+data
+       |--- evaluation
+              |--- buddha.mat
+       |---testset
+              |--- occlusions20
+              |--- reflective20
 ```
