@@ -47,8 +47,8 @@ for i = 1:N
     
     %%% print to command window
     fprintf('[%s]\n', lfreconslist(i).name(1:end-4));
-    fprintf('[PSNR]  LFHDRN:  %0.8f\t', mean(PSNR(:)));
-    fprintf('[SSIM]  LFHDRN:  %0.8f\n', mean(SSIM(:)));
+    fprintf('[PSNR]  %0.8f\t', mean(PSNR(:)));
+    fprintf('[SSIM]  %0.8f\n', mean(SSIM(:)));
     fprintf('-----------------------------------------------\n');
     
 end
