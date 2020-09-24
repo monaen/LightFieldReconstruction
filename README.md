@@ -182,5 +182,7 @@ Paper
 - [x] Angular super-resolution 4x (2x2->8x8).
 - [x] Other materials.
 
+For some reasons, we are not able to provide the pre-trained model for AAAI work.
+
 ## Acknowledgement
 Our code is released under [MIT License](https://github.com/monaen/LightFieldReconstruction/blob/master/LICENSE). We would like to appreciate the GPU support from **Lee Ultrasound Imaging Group** of [Prof.Wei-Ning Lee](https://www.eee.hku.hk/~wnlee/people.html)
