@@ -173,13 +173,13 @@ Paper
 - [x] Evaluation code.
 - [x] Results and analysis.
 * AAAI
-- [ ] Spatial super-resolution 2x framework.
-- [ ] Spatial super-resolution 3x framework.
-- [ ] Spatial super-resolution 4x framework.
-- [ ] Angular super-resolution 2x (5x5->9x9).
-- [ ] Angular super-resolution 2.3x (3x3->7x7).
-- [ ] Angular super-resolution 3x (3x3->9x9).
-- [ ] Angular super-resolution 4x (2x2->8x8).
+- [x] Spatial super-resolution 2x framework.
+- [x] Spatial super-resolution 3x framework.
+- [x] Spatial super-resolution 4x framework.
+- [x] Angular super-resolution 2x (5x5->9x9).
+- [x] Angular super-resolution 2.3x (3x3->7x7).
+- [x] Angular super-resolution 3x (3x3->9x9).
+- [x] Angular super-resolution 4x (2x2->8x8).
 - [x] Other materials.
 
 ## Acknowledgement
