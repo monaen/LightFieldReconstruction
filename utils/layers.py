@@ -214,7 +214,7 @@ def spatio_angular_upsampling(x, K=2, verbose=True):
         out = out[:, :, :, 1:, 1:, :]
 
     # ============ spacial pixel shuffle ============ #
-    out = spacial_pixel_shuffle(out, K)
+    out = spacial_pixel_shuffle(out, K, verbose=False)
 
     if verbose:
         message = '|{0:-^72}|'.format(' Spatio-Angular Upsampling Layer: ' + str(out.get_shape()) + ' ')

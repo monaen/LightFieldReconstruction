@@ -227,8 +227,12 @@ def main(args):
                 x = np.expand_dims(x_batch[j], axis=0)
                 y = np.expand_dims(y_batch[j], axis=0)
 
-                _, aloss, sloss, tloss, recons = sess.run([train_op, model.angular_loss, model.spatial_loss, model.loss, model.Recons],
-                                                          feed_dict={inputs: x, groundtruth: y, is_training: True, learning_rate: lr})
+                _, aloss, sloss, tloss, recons = sess.run([train_op, model.angular_loss, model.spatial_loss,
+                                                           model.loss, model.Recons],
+                                                          feed_dict={inputs: x,
+                                                                     groundtruth: y,
+                                                                     is_training: True,
+                                                                     learning_rate: lr})
 
                 angular_loss += aloss
                 spatial_loss += sloss
