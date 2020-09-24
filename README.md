@@ -193,6 +193,7 @@ Paper
 - [x] The pretrained models for spatial Sx2, Sx3, Sx4.
 - [x] The pretrained models for angular Ax2, Ax2.3, Ax3, Ax4.
 - [x] The pretrained models for spatio-angular Sx2Ax2.
+- [x] Training samples.
 - [x] Testset.
 - [x] Evaluation code.
 - [x] Results and analysis.
@@ -205,6 +206,8 @@ Paper
 - [x] Angular super-resolution 3x (3x3->9x9).
 - [x] Angular super-resolution 4x (2x2->8x8).
 - [x] Other materials.
+* Matlab
+- [x] Matlab evaluation code.
 
 For some reasons, we are not able to provide the pre-trained models for the AAAI work.
 
