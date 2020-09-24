@@ -128,6 +128,30 @@ python evaluation_SpatialAngularSR.py --datapath data/evaluation/buddha.mat \
                                       --select_gpu 0 --verbose
 ```
 
+* Evaluate the entire dataset
+
+Note: All the reported results are tested using Matlab, and here we provide an example to show how to evaluate the results on reflective20 dataset.
+```commandline
+# change to the root folder 'LightFieldReconstruction' of the project
+cd data
+bash download_reflective20.sh
+cd ../pretrained_models
+bash download_pretrained_models_M-HDDRNet_Ax4.sh
+cd ..
+
+python evaluation_on_dataset.py --datafolder data/testset/reflective20 \
+                                --gamma_S 1 \
+                                --gamma_A 4 \
+                                --pretrained_model pretrained_models/M-HDDRNet/Ax4/M-HDDRNet \
+                                --result_folder results \
+                                --select_gpu 0 --verbose
+
+
+# After the execution of "evaluation_on_dataset.py", run the m-file "evaluation.m"
+
+matlab -nodisplay -nosplash -nodesktop -r "run evaluation.m; exit;"
+```
+
 ## Using the pretrained model
 To download the pretrained mdoels, please change the directory into the folder `pretrained_models` and run the corresponding bash files. For example, to download the HDDRNet_Sx4 pretrained model, 
 ```commandline
