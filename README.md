@@ -23,15 +23,24 @@ git clone https://github.com/monaen/LightFieldReconstruction.git --branch master
 #### Training models for spatial or angular or both super-resolution tasks
 * Training the model for spatial super-resolution (e.g. Sx4). You need to specify the `gamma_S` for different spatial SR tasks.
 ```commandline
-python train_SpatialSR.py --gamma_S 4 --verbose --perceptual_loss
+python train_SpatialSR.py --datadir data/train/Spatial/5x5
+                          --gamma_S 4
+                          --verbose
+                          --perceptual_loss
 ```
 * Training the model for angular super-resolution (e.g. Ax4). You need to specify the `gamma_A` for different angular SR tasks.
 ```commandline
-python train_ViewSysthesis.py --gamma_A 4 --verbose
+python train_ViewSysthesis.py --datadir data/train/Angular/9x9
+                              --gamma_A 4
+                              --verbose
 ```
 * Training the model for spatio-angular super-resolution (e.g. Sx2Ax2). You need to specify both the `gamma_S` and `gamma_A` for different spatio-angular SR tasks.
 ```commandline
-python train_ViewSysthesis.py --gamma_S 2 --gamma_A 2 --verbose --perceptual_loss
+python train_SpatialAngularSR.py --datadir data/train/SpatialAngular/5x5
+                                 --gamma_S 2
+                                 --gamma_A 2
+                                 --verbose
+                                 --perceptual_loss
 ```
 
 ### Training arguments
@@ -64,6 +73,11 @@ optional arguments:
   --perceptual_loss         Need to use perceptual loss or not, if true, one also have to set the vgg_model item
   --vgg_model               Pretrained VGG model path
   --save_folder             Model save path
+```
+
+## Training data samples
+```commandline
+
 ```
 
 ## Evaluation
