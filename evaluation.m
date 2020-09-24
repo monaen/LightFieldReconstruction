@@ -53,8 +53,8 @@ for i = 1:N
     
 end
 
-fprintf('\nThe entire MEAN PSNR value for dataset [%s] is: %0.8f', dataset, mean(meanPSNRs));
-fprintf('\nThe entire MEAN SSIM value for dataset [%s] is: %0.8f', dataset, mean(meanSSIMs));
+fprintf('\nThe entire MEAN PSNR value for dataset is: %0.8f', mean(meanPSNRs));
+fprintf('\nThe entire MEAN SSIM value for dataset is: %0.8f', mean(meanSSIMs));
 
 
 
