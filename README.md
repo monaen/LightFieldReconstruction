@@ -76,8 +76,11 @@ optional arguments:
 ```
 
 ## Training data samples
+We provide the training samples to facilitate users to generate custom training set.
 ```commandline
-
+# change to the root folder 'LightFieldReconstruction' of the project
+cd data
+bash download_trainingsamples.sh
 ```
 
 ## Evaluation
