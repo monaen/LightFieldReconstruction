@@ -21,6 +21,8 @@ data/train/Spatial/5x5
 data/train/SpatialAngular/5x5
 data/train/Angular/9x9
 vgg19/weights
+results/HR
+results/SR
 
 # PyInstaller
 #  Usually these files are written by a python script from a template

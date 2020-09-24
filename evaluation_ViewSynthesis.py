@@ -242,11 +242,11 @@ def main(args):
     meanPSNR = np.mean(ApertureWisePSNR(Groundtruth, recons_LF))
     meanSSIM = np.mean(ApertureWiseSSIM(Groundtruth, recons_LF))
 
-    logging.info('{0:+^74}'.format(""))
-    logging.info('|{0: ^72}|'.format("Quantitative result for the scene: {}".format(args.datapath.split('/')[-1])))
-    logging.info('|{0: ^72}|'.format(""))
-    logging.info('|{0: ^72}|'.format("Method: HDDRNet |  Mean PSNR: {:.3f}      Mean SSIM: {:.3f}".format(meanPSNR, meanSSIM)))
-    logging.info('{0:+^74}'.format(""))
+    logging.info("{0:+^74}".format(""))
+    logging.info("|{0: ^72}|".format("Quantitative result for the scene: {}".format(args.datapath.split('/')[-1])))
+    logging.info("|{0: ^72}|".format(""))
+    logging.info("|{0: ^72}|".format("Method: HDDRNet |  Mean PSNR: {:.3f}      Mean SSIM: {:.3f}".format(meanPSNR, meanSSIM)))
+    logging.info("{0:+^74}".format(""))
 
 
 if __name__ == "__main__":

@@ -3,26 +3,15 @@ clear all; clc;
 
 
 % parameters setting
-dataset = 'HCI_old';
-style = '2X(HDRN)';
-savefolder = 'Matlab_Results';
+result_folder = 'results';
 
 % settings
-lfreconslist = dir(fullfile('Results', style, dataset, 'SR', '*.mat'));
-lflabellist  = dir(fullfile('Results', style, dataset, 'HR', '*.mat'));
+lfreconslist = dir(fullfile(result_folder, 'SR', '*.mat'));
+lflabellist  = dir(fullfile(result_folder, 'HR', '*.mat'));
 % lflabellist = dir(fullfile(['../Data/MAT/', dataset, '/*.mat']));
 
 meanPSNRs = [];
 meanSSIMs = [];
-
-if exist(fullfile(savefolder,style,dataset,[style '.txt']))
-    fileID = fopen(fullfile(savefolder,style,dataset,[style '.txt']), 'a+');
-    % fprintf(fileID, 'Reconstruction results on: %s with scale %d\n\n', dataset, mf);
-else
-    mkdir(fullfile(savefolder,style,dataset));
-    fileID = fopen(fullfile(savefolder,style,dataset,[style '.txt']), 'w');
-    fprintf(fileID, '[HDRN] Reconstruction results on: %s with scale %s\n\n', dataset, style);
-end
 
 N = length(lfreconslist);
 for i = 1:N
@@ -63,16 +52,11 @@ for i = 1:N
     fprintf('[SSIM]  LFHDRN:  %0.8f\n', mean(SSIM(:)));
     fprintf('-----------------------------------------------\n');
     
-    %%% print file
-    fprintf(fileID, '[%s]\n', lfreconslist(i).name(1:end-4));
-    fprintf(fileID, '[PSNR]  LFHDRN:  %0.8f\t', mean(PSNR(:)));
-    fprintf(fileID, '[SSIM]  LFHDRN:  %0.8f\n', mean(SSIM(:)));
-    fprintf(fileID, '-----------------------------------------------\n');
 end
 
 
-fprintf(fileID, '\nThe entire MEAN PSNR value for dataset [%s] is: %0.8f', dataset, mean(meanPSNRs) );
-fprintf(fileID, '\nThe entire MEAN SSIM value for dataset [%s] is: %0.8f', dataset, mean(meanSSIMs) );
+fprintf('\nThe entire MEAN PSNR value for dataset [%s] is: %0.8f', dataset, mean(meanPSNRs) );
+fprintf('\nThe entire MEAN SSIM value for dataset [%s] is: %0.8f', dataset, mean(meanSSIMs) );
 fclose(fileID);
 
 
