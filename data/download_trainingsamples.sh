@@ -1,7 +1,7 @@
 #!/usr/bin/env sh
 # ====================================================================================================================== #
 # | Description:                                                                                                       | #
-# |     Script to download the evaluation data.                                                                        | #
+# |     Script to download the training samples.                                                                       | #
 # |                                                                                                                    | #
 # |                                                                                                                    | #
 # | Citation:                                                                                                          | #
@@ -27,11 +27,19 @@
 # |     email:  u3003637@connect.hku.hk  |   nanmeng.uestc@hotmail.com                                                 | #
 # ====================================================================================================================== #
 
-# This script downloads the sample light field data for evaluation.
+# This script downloads the light field training samples.
 # DIR = "$( cd "$(dirname "$0")" ; pwd -P )"
 
-echo "Downloading the sample light field data for evaluation ........"
+echo "Downloading the light field training samples ........"
 
-wget --no-check-certificate https://github.com/monaen/LightFieldReconstruction/raw/storage/data/evaluation/buddha.mat
+wget --no-check-certificate https://github.com/monaen/LightFieldReconstruction/raw/storage/data/train/Angular/9x9/sample.npy
+mkdir train/Angular/9x9
+mv sample.npy train/Angular/9x9
 
-mv buddha.mat evaluation/buddha.mat
+wget --no-check-certificate https://github.com/monaen/LightFieldReconstruction/raw/storage/data/train/Spatial/5x5/sample.npy
+mkdir train/Spatial/5x5
+mv sample.npy train/Spatial/5x5
+
+wget --no-check-certificate https://github.com/monaen/LightFieldReconstruction/raw/storage/data/train/SpatialAngular/5x5/sample.npy
+mkdir train/SpatialAngular/5x5
+mv sample.npy train/SpatialAngular/5x5

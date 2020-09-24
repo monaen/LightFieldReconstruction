@@ -1,7 +1,7 @@
 #!/usr/bin/env sh
 # ====================================================================================================================== #
 # | Description:                                                                                                       | #
-# |     Script to download the pretrained models                                                                       | #
+# |     Script to download the evaluation data (reflective 20).                                                        | #
 # |                                                                                                                    | #
 # |                                                                                                                    | #
 # | Citation:                                                                                                          | #
