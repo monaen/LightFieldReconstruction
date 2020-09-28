@@ -190,7 +190,11 @@ Paper
 @article{Meng2020High,
   title        = {High-order residual network for light field super-resolution},
   author       = {Meng, Nan and Wu, Xiaofei and Liu, Jianzhuang and Lam, Edmund},
-  journal      = {Thirty-Fourth AAAI Conference on Artificial Intelligence},
+  journal      = {Association for the Advancement of Artificial Intelligence},
+  volume       = {34},
+  number       = {7},
+  pages        = {11757-11764},
+  month        = {February},
   year         = {2020}
 }
 ```
