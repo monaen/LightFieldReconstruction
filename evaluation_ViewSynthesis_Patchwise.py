@@ -264,6 +264,8 @@ def main(args):
     # recons_LF = sess.run(model.Recons, feed_dict={inputs: low_inLF, is_training: False})
     recons_LF = ReconstructSpatialLFPatch(low_inLF, model, inputs, is_training, sess, args, stride=60, border=(10, 10))
     recons_LF = recons_LF.squeeze()
+    recons_LF[recons_LF > 1.] = 1.
+    recons_LF[recons_LF < 0.] = 0.
     recons_LF = np.uint8(recons_LF * 255.)
 
     logging.info("===> Calculating the mean PSNR and SSIM values (on luminance channel)......")
